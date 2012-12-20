@@ -144,5 +144,5 @@
                 "tree-xml.el"))
   (load (concat "~/.emacs.d/" file)))
          
-(setq custom-file "~/.emacs.d/tree-custom.el")
+(setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)

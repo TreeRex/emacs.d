@@ -64,12 +64,6 @@
 
 ;(blink-cursor-mode 1)
 
-(setq gtags-ignore-case t
-      gtags-suggested-key-mapping t
-      gtags-auto-update t)
-(autoload 'gtags-mode "gtags" "" t)
-(add-hook 'c++-mode-hook (lambda () (gtags-mode 1)))
-
 (column-number-mode t)
 (show-paren-mode t)
 (transient-mark-mode t)                 ;show region between point & mark
@@ -138,11 +132,12 @@
     (folding-mode-add-find-file-hook))
 
 (dolist (file '("tree-defuns.el"
+                "tree-gtags.el"
                 "tree-lisp.el"
                 "tree-markdown.el"
                 "tree-org.el"
                 "tree-xml.el"))
   (load (concat "~/.emacs.d/" file)))
-         
+
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)

@@ -37,7 +37,9 @@
 
 (setq user-full-name "Tom Emerson")
 
+;; Any packages not contained in a package archive are put into ~/emacs/
 (add-to-list 'load-path (expand-file-name "~/emacs"))
+(add-to-list 'exec-path "/usr/local/bin")
 
 ; I know some files are really large, big deal.
 (setq large-file-warning-threshold nil)
@@ -136,6 +138,7 @@
                 "tree-lisp.el"
                 "tree-markdown.el"
                 "tree-org.el"
+                "tree-semanticweb.el"
                 "tree-xml.el"))
   (load (concat "~/.emacs.d/" file)))
 

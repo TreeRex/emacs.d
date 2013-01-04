@@ -87,14 +87,6 @@
 (setq compilation-read-command nil)     ;don't ask me for the compiler command-line
 (global-set-key [f7] 'compile)
 
-;; (autoload 'folding-mode          "folding" "Folding mode" t)
-;; (autoload 'turn-off-folding-mode "folding" "Folding mode" t)
-;; (autoload 'turn-on-folding-mode  "folding" "Folding mode" t)
-
-;; (eval-after-load "folding-mode"
-;;   '(progn
-;;      (folding-add-to-marks-list 'clojure-mode ";;{{{"  ";;}}}" nil t)))
-
 ;;; Font-lock stuff
 (if (fboundp 'global-font-lock-mode)
     (global-font-lock-mode t))
@@ -130,10 +122,8 @@
 (add-to-list 'default-frame-alist
              '(font . "Source Code Pro-12:weight=medium"))
 
-(if (load "folding" 'nomessage 'noerror)
-    (folding-mode-add-find-file-hook))
-
 (dolist (file '("tree-defuns.el"
+                "tree-folding.el"
                 "tree-gtags.el"
                 "tree-lisp.el"
                 "tree-markdown.el"

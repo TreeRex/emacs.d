@@ -12,7 +12,7 @@
 ;; and put it in ~/emacs.
 
 (autoload 'sparql-mode "sparql-mode.el")
-(add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
+(add-to-list 'auto-mode-alist '("\\.rq\\'" . sparql-mode))
 
 (setq rnc-enable-imenu t)
 (setq rnc-enable-flymake t)

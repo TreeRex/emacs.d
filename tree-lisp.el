@@ -40,3 +40,7 @@
 (setq nrepl-lein-command "lein"
       nrepl-server-command "echo \"lein repl :headless\" | $SHELL -l")
 
+(eval-after-load "folding-mode"
+  '(progn
+    (folding-add-to-marks-list 'clojure-mode ";;{{{"  ";;}}}" nil t)))
+

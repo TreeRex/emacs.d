@@ -37,7 +37,9 @@
 
 (setq user-full-name "Tom Emerson")
 
+;; Any packages not contained in a package archive are put into ~/emacs/
 (add-to-list 'load-path (expand-file-name "~/emacs"))
+(add-to-list 'exec-path "/usr/local/bin")
 
 ; I know some files are really large, big deal.
 (setq large-file-warning-threshold nil)
@@ -85,14 +87,6 @@
 (setq compilation-read-command nil)     ;don't ask me for the compiler command-line
 (global-set-key [f7] 'compile)
 
-;; (autoload 'folding-mode          "folding" "Folding mode" t)
-;; (autoload 'turn-off-folding-mode "folding" "Folding mode" t)
-;; (autoload 'turn-on-folding-mode  "folding" "Folding mode" t)
-
-;; (eval-after-load "folding-mode"
-;;   '(progn
-;;      (folding-add-to-marks-list 'clojure-mode ";;{{{"  ";;}}}" nil t)))
-
 ;;; Font-lock stuff
 (if (fboundp 'global-font-lock-mode)
     (global-font-lock-mode t))
@@ -128,14 +122,13 @@
 (add-to-list 'default-frame-alist
              '(font . "Source Code Pro-12:weight=medium"))
 
-(if (load "folding" 'nomessage 'noerror)
-    (folding-mode-add-find-file-hook))
-
 (dolist (file '("tree-defuns.el"
+                "tree-folding.el"
                 "tree-gtags.el"
                 "tree-lisp.el"
                 "tree-markdown.el"
                 "tree-org.el"
+                "tree-semanticweb.el"
                 "tree-xml.el"))
   (load (concat "~/.emacs.d/" file)))
 

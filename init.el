@@ -48,7 +48,7 @@
 (global-set-key "\M-t" 'indent-relative)
 
 (require 'doxygen)
-(require 'ep-utils)
+(require 'ep-utils "eputils" t)
 
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 

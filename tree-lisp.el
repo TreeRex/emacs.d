@@ -11,6 +11,8 @@
 
 (add-lisp-hook (lambda () (paredit-mode 1)))
 
+(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 0)))
+
 ;; mic-paren
 (paren-activate)
 (setq paren-priority 'both)
@@ -21,13 +23,27 @@
 
 ;; Slime is setup via QuickLisp
 (setq slime-net-coding-system 'utf-8-unix)
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
+(load "~/quicklisp/slime-helper.el")
 
 (setq slime-lisp-implementations
       '((ccl ("/Users/temerson/bin/ccl" "-K utf-8"))))
 
-(setq common-lisp-hyperspec-root "file:///Users/temerson/Documents/HyperSpec/"
-      slime-startup-animation nil
+;; use the local HyperSpec if it's available, otherwise LispWorks'.
+(let ((local-hyperspec-root "~/Documents/HyperSpec/"))
+  (when (file-directory-p local-hyperspec-root)
+    (setq common-lisp-hyperspec-root (concat "file://" (expand-file-name local-hyperspec-root)))))
+
+;; setup pathname translations for Slime when connecting to a remote Lisp
+;; this assumes the slime-tramp contrib has been enabled
+(add-hook 'slime-load-hook
+          (lambda () (push (list "^ese-dev3$"
+                                 (lambda (emacs-filename)
+                                   (subseq emacs-filename (length "/scpc:ese-dev3:")))
+                                 (lambda (emacs-filename)
+                                   (concat "/scpc:ese-dev3:" emacs-filename)))
+                           slime-filename-translations)) t)
+
+(setq slime-startup-animation nil
       slime-complete-symbol-function 'slime-fuzzy-complete-symbol
       lisp-indent-function 'common-lisp-indent-function)
 

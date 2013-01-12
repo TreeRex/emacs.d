@@ -70,8 +70,8 @@
 (show-paren-mode t)
 (transient-mark-mode t)                 ;show region between point & mark
 
-(setq message-log-max nil)
-(kill-buffer "*Messages*")
+;(setq message-log-max nil)
+;(kill-buffer "*Messages*")
 
 (if (null window-system)
     (global-set-key "\C-h" 'delete-backward-char))

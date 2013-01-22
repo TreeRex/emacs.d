@@ -48,7 +48,8 @@
 (global-set-key "\M-t" 'indent-relative)
 
 (require 'doxygen)
-(require 'ep-utils "eputils" t)
+;(require 'ep-utils "eputils" t)
+(require 'ep-utils)
 
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 
@@ -77,7 +78,7 @@
     (global-set-key "\C-h" 'delete-backward-char))
 
 (setq make-backup-files t)
-(setq dired-listing-switches "-alh")
+
 (setq require-final-newline 'ask)
 (setq backup-by-copying-when-linked t)  ;preserve links!
 (setq-default indent-tabs-mode nil)	;tabs are evil
@@ -123,9 +124,11 @@
              '(font . "Source Code Pro-12:weight=medium"))
 
 (dolist (file '("tree-defuns.el"
+                "tree-dired.el"
                 "tree-folding.el"
                 "tree-gtags.el"
                 "tree-lisp.el"
+                "tree-mail.el"
                 "tree-markdown.el"
                 "tree-org.el"
                 "tree-semanticweb.el"

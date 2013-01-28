@@ -26,7 +26,8 @@
 (load "~/quicklisp/slime-helper.el")
 
 (setq slime-lisp-implementations
-      '((ccl ("/Users/temerson/bin/ccl" "-K utf-8"))))
+      '((ccl ("/Users/temerson/bin/ccl" "-K utf-8"))
+        (sbcl ("/Users/temerson/bin/sbcl") :coding-system utf-8-unix)))
 
 ;; use the local HyperSpec if it's available, otherwise LispWorks'.
 (let ((local-hyperspec-root "~/Documents/HyperSpec/"))
@@ -62,4 +63,3 @@
 (eval-after-load "folding-mode"
   '(progn
     (folding-add-to-marks-list 'clojure-mode ";;{{{"  ";;}}}" nil t)))
-

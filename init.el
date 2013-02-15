@@ -123,7 +123,8 @@
 (add-to-list 'default-frame-alist
              '(font . "Source Code Pro-12:weight=medium"))
 
-(dolist (file '("tree-defuns.el"
+(dolist (file '("private.el"
+                "tree-defuns.el"
                 "tree-dired.el"
                 "tree-folding.el"
                 "tree-gtags.el"

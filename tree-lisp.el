@@ -2,16 +2,22 @@
 ;;;;
 ;;;; Lisp configuration
 
-(maybe-install-packages '(clojure-mode mic-paren nrepl paredit parenface))
+(maybe-install-packages '(clojure-mode mic-paren nrepl paredit parenface pretty-mode))
+
+(require 'pretty-mode)
 
 (defun add-lisp-hook (func)
   (add-hooks '(emacs-lisp lisp clojure) func))
 
 ;;; General Goodness
 
-(add-lisp-hook (lambda () (paredit-mode 1)))
+(add-lisp-hook (lambda ()
+                 (paredit-mode 1)
+                 (pretty-mode 1)))
 
 (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 0)))
+
+
 
 ;; mic-paren
 (paren-activate)

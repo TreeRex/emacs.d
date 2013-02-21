@@ -121,10 +121,11 @@
   (load-theme 'wombat t))
 
 (add-to-list 'default-frame-alist
-             '(font . "Source Code Pro-12:weight=medium"))
+             '(font . "Source Code Pro-14:weight=medium"))
 
 (dolist (file '("private.el"
                 "tree-defuns.el"
+                "tree-advice.el"
                 "tree-dired.el"
                 "tree-folding.el"
                 "tree-gtags.el"

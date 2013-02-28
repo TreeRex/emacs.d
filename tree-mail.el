@@ -33,7 +33,7 @@
 (setq mu4e-bookmarks
       '(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
         ("date:today..now AND NOT flag:trashed AND NOT from:temerson@*" "Today's messages" ?t)
-        ("date:1w..now AND NOT flag:trashed AND NOT from:temerson@*" "Last 7 days messages" ?7)
+        ("date:2d..now AND NOT flag:trashed AND NOT from:temerson@*" "Last 2 days messages" ?2)
         ("date:..2w AND flag:trashed" "Trashed older than 2w" ?T)))
 
 (setq mu4e-refile-folder

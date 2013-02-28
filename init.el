@@ -121,12 +121,14 @@
   (load-theme 'wombat t))
 
 
-(add-to-list 'default-frame-alist
-             ;; my old eyes need a bigger font when I'm at my desk on a big screen
-             (if (and (= (display-pixel-width) 1920)
-                      (= (display-pixel-height) 1200))
-                 (cons 'font "Source Code Pro-18:weight=medium")
-                 (cons 'font "Source Code Pro-14:weight=medium")))
+;; (add-to-list 'default-frame-alist
+;;              ;; my old eyes need a bigger font when I'm at my desk on a big screen
+;;              (if (and (= (display-pixel-width) 1920)
+;;                       (= (display-pixel-height) 1200))
+;;                  (cons 'font "Source Code Pro-18:weight=medium")
+;;                  (cons 'font "Source Code Pro-14:weight=medium")))
+
+(add-to-list 'default-frame-alist '(font . "Source Code Pro-14:weight=medium"))
 
 (dolist (file '("private.el"
                 "tree-defuns.el"

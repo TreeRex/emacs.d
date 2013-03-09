@@ -118,8 +118,12 @@
 (put 'upcase-region 'disabled nil)
 
 (when window-system
-  (load-theme 'wombat t))
+  (load-theme 'solarized-dark t))
+; blackboard is nice too
+; solarized-dark as well
 
+(require 'powerline)
+(powerline-default)
 
 ;; (add-to-list 'default-frame-alist
 ;;              ;; my old eyes need a bigger font when I'm at my desk on a big screen
@@ -128,7 +132,11 @@
 ;;                  (cons 'font "Source Code Pro-18:weight=medium")
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 
-(add-to-list 'default-frame-alist '(font . "Source Code Pro-14:weight=medium"))
+;(add-to-list 'default-frame-alist ')
+(setq default-frame-alist (append '((font . "Source Code Pro-14:weight=medium")
+                                    (width . 110)
+                                    (height . 45))
+                                  default-frame-alist))
 
 (dolist (file '("private.el"
                 "tree-defuns.el"

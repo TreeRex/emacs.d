@@ -8,6 +8,9 @@
 (when (< emacs-major-version 24)
   (error "Initialization hasn't been tested versions of Emacs older than 24.x"))
 
+;; load common functions ahead of everything else
+(load "~/.emacs.d/tree-defuns.el")
+
 (dolist (m '(tool-bar-mode scroll-bar-mode))
   (when (fboundp m)
     (funcall m -1)))
@@ -47,9 +50,9 @@
 (global-unset-key "\M-t")
 (global-set-key "\M-t" 'indent-relative)
 
-(require 'doxygen)
+;(require 'doxygen)
 ;(require 'ep-utils "eputils" t)
-(require 'ep-utils)
+;(require 'ep-utils)
 
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 
@@ -65,8 +68,7 @@
 ;;       display-time-format "%R (%d %b)")
 ;; (display-time)
 
-;(blink-cursor-mode 1)
-
+(blink-cursor-mode 1)
 (column-number-mode t)
 (show-paren-mode t)
 (transient-mark-mode t)                 ;show region between point & mark
@@ -117,13 +119,15 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
+(maybe-install-packages '(noctilux-theme))
+
 (when window-system
-  (load-theme 'solarized-dark t))
+  (load-theme 'noctilux t))
 ; blackboard is nice too
 ; solarized-dark as well
 
-(require 'powerline)
-(powerline-default)
+;(require 'powerline)
+;(powerline-default)
 
 ;; (add-to-list 'default-frame-alist
 ;;              ;; my old eyes need a bigger font when I'm at my desk on a big screen
@@ -132,25 +136,25 @@
 ;;                  (cons 'font "Source Code Pro-18:weight=medium")
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 
-;(add-to-list 'default-frame-alist ')
-(setq default-frame-alist (append '((font . "Source Code Pro-14:weight=medium")
+(setq default-frame-alist (append '((font . "Source Code Pro-10:weight=medium")
                                     (width . 110)
                                     (height . 45))
                                   default-frame-alist))
 
 (dolist (file '("private.el"
-                "tree-defuns.el"
                 "tree-advice.el"
                 "tree-dired.el"
                 "tree-folding.el"
                 "tree-gtags.el"
                 "tree-lisp.el"
-                "tree-mail.el"
+;                "tree-mail.el"
                 "tree-markdown.el"
                 "tree-org.el"
                 "tree-semanticweb.el"
+                "tree-tex.el"
+                "tree-vcs.el"
                 "tree-xml.el"))
-  (load (concat "~/.emacs.d/" file)))
+  (load (concat "~/.emacs.d/" file) t))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)

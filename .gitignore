@@ -7,3 +7,4 @@ tramp
 custom.el
 private.el
 url
+.mc-lists.el

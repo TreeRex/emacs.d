@@ -35,6 +35,15 @@
 
 (package-initialize)
 
+;;; Load support functions ahead of most everything else
+(load "~/.emacs.d/tree-defuns.el")
+
+(maybe-install-packages '(multiple-cursors))
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
 (setq user-full-name "Tom Emerson")
 
 ;; Any packages not contained in a package archive are put into ~/emacs/
@@ -96,6 +105,12 @@
 ;;; Key bindings
 (global-set-key "\M-g" 'goto-line)
 (global-set-key "\e\e" 'eval-expression)
+; from http://whattheemacsd.com/
+(global-set-key (kbd "M-j")
+            (lambda ()
+              (interactive)
+              (join-line -1)))
+
 (put 'eval-expression 'disabled nil)
 
 ; Kyle Jones's filladapt package
@@ -117,13 +132,15 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-(when window-system
-  (load-theme 'solarized-dark t))
-; blackboard is nice too
-; solarized-dark as well
+(maybe-install-packages '(noctilux-theme))
 
-(require 'powerline)
-(powerline-default)
+(if window-system
+  (load-theme 'noctilux t))
+; solarized-dark
+; blackboard is nice too
+
+;(require 'powerline)
+;(powerline-default)
 
 ;; (add-to-list 'default-frame-alist
 ;;              ;; my old eyes need a bigger font when I'm at my desk on a big screen
@@ -133,19 +150,19 @@
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 
 ;(add-to-list 'default-frame-alist ')
-(setq default-frame-alist (append '((font . "Source Code Pro-14:weight=medium")
+(setq default-frame-alist (append '((font . "Source Code Pro-12:weight=medium")
                                     (width . 110)
                                     (height . 45))
                                   default-frame-alist))
 
 (dolist (file '("private.el"
-                "tree-defuns.el"
                 "tree-advice.el"
                 "tree-dired.el"
                 "tree-folding.el"
                 "tree-gtags.el"
+                "tree-javascript.el"
                 "tree-lisp.el"
-                "tree-mail.el"
+                ;"tree-mail.el"
                 "tree-markdown.el"
                 "tree-org.el"
                 "tree-semanticweb.el"

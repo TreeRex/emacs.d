@@ -30,7 +30,10 @@
 (load "~/quicklisp/slime-helper.el")
 
 (setq slime-lisp-implementations
-      '((sbcl ("/home/tree/lisp/sbcl/bin/sbcl") :coding-system utf-8-unix)))
+      '((sbcl ("/home/tree/lisp/sbcl/bin/sbcl"
+               "--core" "/home/tree/lisp/sbcl/lib/sbcl/sbcl.core")
+         :env "SBCL_HOME=/home/tree/lisp/sbcl/lib/sbcl"
+         :coding-system utf-8-unix)))
 
 ;; use the local HyperSpec if it's available, otherwise LispWorks'.
 (let ((local-hyperspec-root "~/Documents/HyperSpec/"))

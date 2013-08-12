@@ -15,9 +15,6 @@
   (when (fboundp m)
     (funcall m -1)))
 
-(unless (eq system-type 'darwin)
-  (menu-bar-mode -1))
-
 (setq inhibit-startup-message t)	;I know it's emacs, silly...
 
 ;;; Ubiquitous Unicode
@@ -91,8 +88,7 @@
 (global-set-key [f7] 'compile)
 
 ;;; Font-lock stuff
-(if (fboundp 'global-font-lock-mode)
-    (global-font-lock-mode t))
+(global-font-lock-mode)
 (setq font-lock-maximum-decoration '((c-mode . 1) (t . 3)))
 
 ;;; Key bindings
@@ -144,6 +140,7 @@
 (dolist (file '("private.el"
                 "tree-advice.el"
                 "tree-dired.el"
+                "tree-dylan.el"
                 "tree-folding.el"
                 "tree-gtags.el"
                 "tree-lisp.el"

@@ -8,12 +8,12 @@
 (when (< emacs-major-version 24)
   (error "Initialization hasn't been tested versions of Emacs older than 24.x"))
 
+;; load common functions ahead of everything else
+(load "~/.emacs.d/tree-defuns.el")
+
 (dolist (m '(tool-bar-mode scroll-bar-mode))
   (when (fboundp m)
     (funcall m -1)))
-
-(unless (eq system-type 'darwin)
-  (menu-bar-mode -1))
 
 (setq inhibit-startup-message t)	;I know it's emacs, silly...
 
@@ -56,9 +56,9 @@
 (global-unset-key "\M-t")
 (global-set-key "\M-t" 'indent-relative)
 
-(require 'doxygen)
+;(require 'doxygen)
 ;(require 'ep-utils "eputils" t)
-(require 'ep-utils)
+;(require 'ep-utils)
 
 (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 
@@ -74,8 +74,7 @@
 ;;       display-time-format "%R (%d %b)")
 ;; (display-time)
 
-;(blink-cursor-mode 1)
-
+(blink-cursor-mode 1)
 (column-number-mode t)
 (show-paren-mode t)
 (transient-mark-mode t)                 ;show region between point & mark
@@ -98,8 +97,7 @@
 (global-set-key [f7] 'compile)
 
 ;;; Font-lock stuff
-(if (fboundp 'global-font-lock-mode)
-    (global-font-lock-mode t))
+(global-font-lock-mode)
 (setq font-lock-maximum-decoration '((c-mode . 1) (t . 3)))
 
 ;;; Key bindings
@@ -134,9 +132,8 @@
 
 (maybe-install-packages '(noctilux-theme))
 
-(if window-system
+(when window-system
   (load-theme 'noctilux t))
-; solarized-dark
 ; blackboard is nice too
 
 ;(require 'powerline)
@@ -149,8 +146,7 @@
 ;;                  (cons 'font "Source Code Pro-18:weight=medium")
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 
-;(add-to-list 'default-frame-alist ')
-(setq default-frame-alist (append '((font . "Source Code Pro-12:weight=medium")
+(setq default-frame-alist (append '((font . "Source Code Pro-10:weight=medium")
                                     (width . 110)
                                     (height . 45))
                                   default-frame-alist))
@@ -158,16 +154,18 @@
 (dolist (file '("private.el"
                 "tree-advice.el"
                 "tree-dired.el"
+                "tree-dylan.el"
                 "tree-folding.el"
                 "tree-gtags.el"
                 "tree-javascript.el"
                 "tree-lisp.el"
-                ;"tree-mail.el"
                 "tree-markdown.el"
                 "tree-org.el"
                 "tree-semanticweb.el"
+                "tree-tex.el"
+                "tree-vcs.el"
                 "tree-xml.el"))
-  (load (concat "~/.emacs.d/" file)))
+  (load (concat "~/.emacs.d/" file) t))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)

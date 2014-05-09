@@ -2,18 +2,17 @@
 ;;;;
 ;;;; Lisp configuration
 
-(maybe-install-packages '(clojure-mode mic-paren nrepl paredit parenface pretty-mode))
-
-(require 'pretty-mode)
+(maybe-install-packages '(clojure-mode cider slamhound align-cljlet mic-paren paredit parenface))
 
 (defun add-lisp-hook (func)
   (add-hooks '(emacs-lisp lisp clojure) func))
 
 ;;; General Goodness
 
+(eldoc-mode 1)
+
 (add-lisp-hook (lambda ()
-                 (paredit-mode 1)
-                 (pretty-mode 1)))
+                 (paredit-mode 1)))
 
 (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 0)))
 
@@ -22,18 +21,22 @@
 (setq paren-priority 'both)
 
 (require 'parenface)
+(require 'speedbar)
 
 ;;; Common Lisp
+
+(speedbar-add-supported-extension ".lisp")
 
 ;; Slime is setup via QuickLisp
 (setq slime-net-coding-system 'utf-8-unix)
 (load "~/quicklisp/slime-helper.el")
 
 (setq slime-lisp-implementations
-      '((sbcl ("/home/tree/lisp/sbcl/bin/sbcl"
-               "--core" "/home/tree/lisp/sbcl/lib/sbcl/sbcl.core")
-         :env "SBCL_HOME=/home/tree/lisp/sbcl/lib/sbcl"
-         :coding-system utf-8-unix)))
+      `((sbcl (,(expand-file-name "~/lisp/sbcl/bin/sbcl")
+                "--core" ,(expand-file-name "~/lisp/sbcl/lib/sbcl/sbcl.core")
+                "--dynamic-space-size" "2000")
+              :env ,(concat "SBCL_HOME=" (expand-file-name "~/lisp/sbcl/lib/sbcl"))
+              :coding-system utf-8-unix)))
 
 ;; use the local HyperSpec if it's available, otherwise LispWorks'.
 (let ((local-hyperspec-root "~/Documents/HyperSpec/"))
@@ -58,14 +61,21 @@
 
 ;;; Clojure
 
-(autoload 'clojure-mode "clojure-mode" nil t)
+(require 'clojure-mode)
+
+(speedbar-add-supported-extension ".clj")
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 
-(autoload 'nrepl-jack-in "clojure-mode" nil t)
-(eval-after-load "clojure-mode" '(require 'nrepl))
-(setq nrepl-lein-command "lein"
-      nrepl-server-command "echo \"lein repl :headless\" | $SHELL -l")
+; Cider configuration (https://github.com/clojure-emacs/cider)
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
 
-(eval-after-load "folding-mode"
-  '(progn
-    (folding-add-to-marks-list 'clojure-mode ";;{{{"  ";;}}}" nil t)))
+(setq nrepl-hide-special-buffers t)
+(setq cider-repl-print-length 100)
+
+
+
+
+;; (eval-after-load "folding-mode"
+;;   '(progn
+;;     (folding-add-to-marks-list 'clojure-mode ";;{{{"  ";;}}}" nil t)))

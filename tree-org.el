@@ -1,5 +1,8 @@
 ;;;; -*- Mode: Emacs-Lisp
 
+(require 'speedbar)
+
+
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
@@ -12,4 +15,7 @@
         (sequence "QUESTION" "|" "ANSWERED")
         (sequence "TASK" "|" "COMPLETE")))
 
-(add-hook 'org-mode-hook (lambda () (visual-line-mode)))
+(add-hook 'org-mode-hook (lambda ()
+                           (visual-line-mode)
+                           (speedbar-add-supported-extension ".org")))
+

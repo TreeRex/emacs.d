@@ -17,6 +17,8 @@
 
 (setq inhibit-startup-message t)	;I know it's emacs, silly...
 
+(setq frame-title-format "%b %+%+ %f %n")
+
 ;;; Ubiquitous Unicode
 
 (set-terminal-coding-system 'utf-8)
@@ -38,7 +40,12 @@
 ;;; Load support functions ahead of most everything else
 (load "~/.emacs.d/tree-defuns.el")
 
-(maybe-install-packages '(multiple-cursors))
+(maybe-install-packages '(ag multiple-cursors))
+
+;; ag configuration
+(setq ag-reuse-buffers t)
+
+;; multiple-cursor configuration
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
@@ -53,21 +60,39 @@
 ; I know some files are really large, big deal.
 (setq large-file-warning-threshold nil)
 
+(setq-default indicate-empty-lines t)
+(setq require-trailing-newline t)
+
 (global-unset-key "\M-t")
 (global-set-key "\M-t" 'indent-relative)
 
-;(require 'doxygen)
-;(require 'ep-utils "eputils" t)
-;(require 'ep-utils)
-
-(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(require 'doxygen "doxygen" t)
+(require 'ep-utils "ep-utils" t)
 
 ;; better handling for buffers editing the same file name
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
 ;; use ibuffer
-(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
+(setq ibuffer-default-sorting-mode 'major-mode)
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("emacs" (or (name . "^\\*scratch\\*$")
+                      (name . "^\\*Messages\\*$")
+                      (name . "^\\*info\\*$")
+                      (name . "^\\*completions\\*$")))
+         ("dired" (mode . dired-mode))
+         ("writing" (or (mode . org-mode)
+                        (mode . text-mode)))
+         ("lisp" (or (mode . clojure-mode)
+                     (mode . lisp-mode)
+                     (mode . emacs-lisp-mode))))))
+
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")))
+
 
 ;; (setq display-time-day-and-date nil
 ;;       display-time-24hr-format t
@@ -87,9 +112,11 @@
 
 (setq make-backup-files t)
 
-(setq require-final-newline 'ask)
+(setq require-final-newline t)
 (setq backup-by-copying-when-linked t)  ;preserve links!
 (setq-default indent-tabs-mode nil)	;tabs are evil
+
+(setq default-tab-width 4)
 
 (setq-default ediff-diff-options "-w")
 
@@ -98,7 +125,7 @@
 
 ;;; Font-lock stuff
 (global-font-lock-mode)
-(setq font-lock-maximum-decoration '((c-mode . 1) (t . 3)))
+(setq font-lock-maximum-decoration '((c-mode . 1) (t . 3) (clojure-mode . t)))
 
 ;;; Key bindings
 (global-set-key "\M-g" 'goto-line)
@@ -115,25 +142,14 @@
 ;(require 'filladapt)
 ;(add-hook 'text-mode-hook 'turn-on-filladapt-mode)
 
-(setq c-default-style "stroustrup")
-
-(defun my-c-mode-common-hook ()
-;  (c-setup-filladapt)
-;  (c-toggle-auto-hungry-state 1)
-  (setq tab-width 4
-        indent-tabs-mode nil
-        comment-column 45)
-  (c-set-offset 'member-init-intro '++))
-
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-(maybe-install-packages '(noctilux-theme))
+(maybe-install-packages '(noctilux-theme ample-theme soft-stone-theme))
 
 (when window-system
-  (load-theme 'noctilux t))
+  (load-theme 'flatland t))
+
 ; blackboard is nice too
 
 ;(require 'powerline)
@@ -146,13 +162,15 @@
 ;;                  (cons 'font "Source Code Pro-18:weight=medium")
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 
-(setq default-frame-alist (append '((font . "Source Code Pro-10:weight=medium")
+(setq default-frame-alist (append '(
+                                    (font . "Fantasque Sans Mono-16:weight=light")
                                     (width . 110)
                                     (height . 45))
                                   default-frame-alist))
 
-(dolist (file '("private.el"
+(dolist (file '(
                 "tree-advice.el"
+                "tree-cpp.el"
                 "tree-dired.el"
                 "tree-dylan.el"
                 "tree-folding.el"
@@ -161,6 +179,7 @@
                 "tree-lisp.el"
                 "tree-markdown.el"
                 "tree-org.el"
+;                "tree-projectile.el"
                 "tree-semanticweb.el"
                 "tree-tex.el"
                 "tree-vcs.el"

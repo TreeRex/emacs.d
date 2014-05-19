@@ -40,7 +40,7 @@
 ;;; Load support functions ahead of most everything else
 (load "~/.emacs.d/tree-defuns.el")
 
-(maybe-install-packages '(ag multiple-cursors))
+(maybe-install-packages '(ag multiple-cursors uuid))
 
 ;; ag configuration
 (setq ag-reuse-buffers t)
@@ -60,8 +60,11 @@
 ; I know some files are really large, big deal.
 (setq large-file-warning-threshold nil)
 
-(setq-default indicate-empty-lines t)
-(setq require-trailing-newline t)
+(setq-default indicate-empty-lines t
+              require-trailing-newline t
+              truncate-lines t
+              ediff-diff-options "-w"
+              indent-tabs-mode nil)
 
 (global-unset-key "\M-t")
 (global-set-key "\M-t" 'indent-relative)
@@ -75,6 +78,7 @@
 
 ;; use ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
+
 (setq ibuffer-default-sorting-mode 'major-mode)
 (setq ibuffer-saved-filter-groups
       '(("default"
@@ -104,21 +108,15 @@
 (show-paren-mode t)
 (transient-mark-mode t)                 ;show region between point & mark
 
-;(setq message-log-max nil)
-;(kill-buffer "*Messages*")
-
-(if (null window-system)
+(unless (display-graphic-p)
     (global-set-key "\C-h" 'delete-backward-char))
 
 (setq make-backup-files t)
 
 (setq require-final-newline t)
 (setq backup-by-copying-when-linked t)  ;preserve links!
-(setq-default indent-tabs-mode nil)	;tabs are evil
 
 (setq default-tab-width 4)
-
-(setq-default ediff-diff-options "-w")
 
 (setq compilation-read-command nil)     ;don't ask me for the compiler command-line
 (global-set-key [f7] 'compile)
@@ -147,7 +145,7 @@
 
 (maybe-install-packages '(noctilux-theme ample-theme soft-stone-theme))
 
-(when window-system
+(when (display-graphic-p)
   (load-theme 'flatland t))
 
 ; blackboard is nice too
@@ -183,8 +181,12 @@
                 "tree-semanticweb.el"
                 "tree-tex.el"
                 "tree-vcs.el"
-                "tree-xml.el"))
+                "tree-xml.el"
+                "tree-speedbar.el"))
   (load (concat "~/.emacs.d/" file) t))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
+
+(when (display-graphic-p)
+    (server-start))

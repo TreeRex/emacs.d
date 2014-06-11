@@ -55,7 +55,9 @@
 
 ;; Any packages not contained in a package archive are put into ~/emacs/
 (add-to-list 'load-path (expand-file-name "~/emacs"))
-(add-to-list 'exec-path "/usr/local/bin")
+
+(dolist (p (list "/usr/local/bin" (expand-file-name "~/bin")))
+  (add-to-list 'exec-path p))
 
 ; I know some files are really large, big deal.
 (setq large-file-warning-threshold nil)
@@ -65,6 +67,8 @@
               truncate-lines t
               ediff-diff-options "-w"
               indent-tabs-mode nil)
+
+(setq-default ispell-program-name "aspell")
 
 (global-unset-key "\M-t")
 (global-set-key "\M-t" 'indent-relative)
@@ -179,6 +183,7 @@
                 "tree-org.el"
 ;                "tree-projectile.el"
                 "tree-semanticweb.el"
+                "tree-term.el"
                 "tree-tex.el"
                 "tree-vcs.el"
                 "tree-xml.el"

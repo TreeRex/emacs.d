@@ -2,7 +2,13 @@
 ;;;;
 ;;;; Lisp configuration
 
-(maybe-install-packages '(clojure-mode cider slamhound align-cljlet mic-paren paredit parenface))
+(maybe-install-packages '(clojure-mode slamhound mic-paren paredit parenface))
+
+;; CIDER isn't pulled from MELPA: I find it difficult to keep the Emacs mode and
+;; the middleware synchronized that way
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/cider-0.7.0"))
+(maybe-install-packages '(pkg-info))    ;cider requirement
+(require 'cider)
 
 (defun add-lisp-hook (func)
   (add-hooks '(emacs-lisp lisp clojure) func))
@@ -63,19 +69,25 @@
 
 (require 'clojure-mode)
 
+
+
 (speedbar-add-supported-extension ".clj")
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 
-; Cider configuration (https://github.com/clojure-emacs/cider)
+;; Cider configuration (https://github.com/clojure-emacs/cider)
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 (add-hook 'cider-repl-mode-hook 'paredit-mode)
 
 (setq nrepl-hide-special-buffers t)
-(setq cider-repl-print-length 100)
+(setq cider-repl-use-pretty-printing t)
 
-
-
-
-;; (eval-after-load "folding-mode"
-;;   '(progn
-;;     (folding-add-to-marks-list 'clojure-mode ";;{{{"  ";;}}}" nil t)))
+;; better indentation for Compojure routes
+(define-clojure-indent
+  (defroutes 'defun)
+  (GET 2)
+  (POST 2)
+  (PUT 2)
+  (DELETE 2)
+  (HEAD 2)
+  (ANY 2)
+  (context 2))

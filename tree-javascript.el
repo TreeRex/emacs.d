@@ -4,5 +4,6 @@
 
 (speedbar-add-supported-extension ".js")
 
-(maybe-install-packages '(js2-mode))
+(maybe-install-packages '(js2-mode json-mode))
 (add-to-list 'auto-mode-alist '("\\.js" . js2-mode))
+

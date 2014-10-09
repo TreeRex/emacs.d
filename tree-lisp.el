@@ -2,13 +2,7 @@
 ;;;;
 ;;;; Lisp configuration
 
-(maybe-install-packages '(clojure-mode slamhound mic-paren paredit parenface))
-
-;; CIDER isn't pulled from MELPA: I find it difficult to keep the Emacs mode and
-;; the middleware synchronized that way
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/cider-0.7.0"))
-(maybe-install-packages '(pkg-info))    ;cider requirement
-(require 'cider)
+(maybe-install-packages '(clojure-mode slamhound mic-paren paredit parenface dash cider))
 
 (defun add-lisp-hook (func)
   (add-hooks '(emacs-lisp lisp clojure) func))
@@ -68,8 +62,6 @@
 ;;; Clojure
 
 (require 'clojure-mode)
-
-
 
 (speedbar-add-supported-extension ".clj")
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))

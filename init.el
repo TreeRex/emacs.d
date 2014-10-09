@@ -31,16 +31,20 @@
 (require 'package)
 
 (dolist (p '(("melpa" . "http://melpa.milkbox.net/packages/")
-             ("marmalade" . "http://marmalade-repo.org/packages")
+             ("marmalade" . "http://marmalade-repo.org/packages/")
              ("org" . "http://orgmode.org/elpa/")))
   (add-to-list 'package-archives p t))
 
 (package-initialize)
 
-;;; Load support functions ahead of most everything else
-(load "~/.emacs.d/tree-defuns.el")
+(maybe-install-packages '(ag multiple-cursors uuid flx-ido company))
 
-(maybe-install-packages '(ag multiple-cursors uuid))
+(require 'flx-ido)
+(ido-mode 1)
+(ido-everywhere 1)
+(flx-ido-mode 1)
+
+(global-company-mode)
 
 ;; ag configuration
 (setq ag-reuse-buffers t)
@@ -147,10 +151,12 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-(maybe-install-packages '(noctilux-theme ample-theme soft-stone-theme))
+;(maybe-install-packages '(noctilux-theme ample-theme soft-stone-theme))
+
+(maybe-install-packages '(smyx-theme))
 
 (when (display-graphic-p)
-  (load-theme 'flatland t))
+  (load-theme 'smyx t))
 
 ; blackboard is nice too
 
@@ -181,7 +187,7 @@
                 "tree-lisp.el"
                 "tree-markdown.el"
                 "tree-org.el"
-;                "tree-projectile.el"
+                "tree-projectile.el"
                 "tree-semanticweb.el"
                 "tree-term.el"
                 "tree-tex.el"

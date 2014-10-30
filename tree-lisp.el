@@ -2,7 +2,7 @@
 ;;;;
 ;;;; Lisp configuration
 
-(maybe-install-packages '(clojure-mode slamhound mic-paren paredit parenface dash cider))
+(maybe-install-packages '(clojure-mode slamhound mic-paren paredit parenface dash cider clj-refactor))
 
 (defun add-lisp-hook (func)
   (add-hooks '(emacs-lisp lisp clojure) func))
@@ -65,6 +65,11 @@
 
 (speedbar-add-supported-extension ".clj")
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+(add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
+
+(add-hook 'clojure-mode-hook (lambda ()
+                               (clj-refactor-mode 1)
+                               (cljr-add-keybindings-with-prefix "C-c m")))
 
 ;; Cider configuration (https://github.com/clojure-emacs/cider)
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)

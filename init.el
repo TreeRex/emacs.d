@@ -153,7 +153,7 @@
 
 ;(maybe-install-packages '(noctilux-theme ample-theme soft-stone-theme))
 
-(maybe-install-packages '(smyx-theme))
+(maybe-install-packages '(smyx-theme warm-night-theme))
 
 (when (display-graphic-p)
   (load-theme 'smyx t))

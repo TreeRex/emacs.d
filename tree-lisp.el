@@ -2,10 +2,11 @@
 ;;;;
 ;;;; Lisp configuration
 
-(maybe-install-packages '(clojure-mode slamhound mic-paren paredit parenface dash cider clj-refactor))
+; clj-refactor
+(maybe-install-packages '(clojure-mode mic-paren paredit paren-face dash cider))
 
 (defun add-lisp-hook (func)
-  (add-hooks '(emacs-lisp lisp clojure) func))
+  (add-hooks '(lisp clojure) func))
 
 ;;; General Goodness
 
@@ -14,34 +15,34 @@
 (add-lisp-hook (lambda ()
                  (paredit-mode 1)))
 
-(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 0)))
+;(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 0)))
 
 ;; mic-paren
 (paren-activate)
 (setq paren-priority 'both)
 
-(require 'parenface)
-(require 'speedbar)
+(global-paren-face-mode)
+;(require 'speedbar)
 
 ;;; Common Lisp
 
-(speedbar-add-supported-extension ".lisp")
+;(speedbar-add-supported-extension ".lisp")
 
 ;; Slime is setup via QuickLisp
-(setq slime-net-coding-system 'utf-8-unix)
-(load "~/quicklisp/slime-helper.el")
+;; (setq slime-net-coding-system 'utf-8-unix)
+;; (load "~/quicklisp/slime-helper.el")
 
-(setq slime-lisp-implementations
-      `((sbcl (,(expand-file-name "~/lisp/sbcl/bin/sbcl")
-                "--core" ,(expand-file-name "~/lisp/sbcl/lib/sbcl/sbcl.core")
-                "--dynamic-space-size" "2000")
-              :env ,(concat "SBCL_HOME=" (expand-file-name "~/lisp/sbcl/lib/sbcl"))
-              :coding-system utf-8-unix)))
+;; (setq slime-lisp-implementations
+;;       `((sbcl (,(expand-file-name "~/lisp/sbcl/bin/sbcl")
+;;                 "--core" ,(expand-file-name "~/lisp/sbcl/lib/sbcl/sbcl.core")
+;;                 "--dynamic-space-size" "2000")
+;;               :env ,(concat "SBCL_HOME=" (expand-file-name "~/lisp/sbcl/lib/sbcl"))
+;;               :coding-system utf-8-unix)))
 
-;; use the local HyperSpec if it's available, otherwise LispWorks'.
-(let ((local-hyperspec-root "~/Documents/HyperSpec/"))
-  (when (file-directory-p local-hyperspec-root)
-    (setq common-lisp-hyperspec-root (concat "file://" (expand-file-name local-hyperspec-root)))))
+;; ;; use the local HyperSpec if it's available, otherwise LispWorks'.
+;; (let ((local-hyperspec-root "~/Documents/HyperSpec/"))
+;;   (when (file-directory-p local-hyperspec-root)
+;;     (setq common-lisp-hyperspec-root (concat "file://" (expand-file-name local-hyperspec-root)))))
 
 ;; setup pathname translations for Slime when connecting to a remote Lisp
 ;; this assumes the slime-tramp contrib has been enabled
@@ -53,33 +54,34 @@
 ;;                                    (concat "/scpc:ese-dev3:" emacs-filename)))
 ;;                            slime-filename-translations)) t)
 
-(setq slime-startup-animation nil
-      slime-complete-symbol-function 'slime-fuzzy-complete-symbol
-      lisp-indent-function 'common-lisp-indent-function)
+;; (setq slime-startup-animation nil
+;;       slime-complete-symbol-function 'slime-fuzzy-complete-symbol
+;;       lisp-indent-function 'common-lisp-indent-function)
 
-(global-set-key "\C-cs" 'slime-selector)
+;; (global-set-key "\C-cs" 'slime-selector)
 
 ;;; Clojure
 
 (require 'clojure-mode)
 
-(speedbar-add-supported-extension ".clj")
+;(speedbar-add-supported-extension ".clj")
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
 
-(add-hook 'clojure-mode-hook (lambda ()
-                               (clj-refactor-mode 1)
-                               (cljr-add-keybindings-with-prefix "C-c m")))
+;; (add-hook 'clojure-mode-hook (lambda ()
+;;                                (clj-refactor-mode 1)
+;;                                (cljr-add-keybindings-with-prefix "C-c m")))
 
 ;; Cider configuration (https://github.com/clojure-emacs/cider)
-(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-(add-hook 'cider-repl-mode-hook 'paredit-mode)
+;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+;; (add-hook 'cider-repl-mode-hook 'paredit-mode)
 
-(setq nrepl-hide-special-buffers t)
-(setq cider-repl-use-pretty-printing t)
+;(setq nrepl-hide-special-buffers t)
+(setq nrepl-log-messages t)
+;; (setq cider-repl-use-pretty-printing t)
 
-;; better indentation for Compojure routes
 (define-clojure-indent
+  ;; Compojure
   (defroutes 'defun)
   (GET 2)
   (POST 2)
@@ -88,3 +90,16 @@
   (HEAD 2)
   (ANY 2)
   (context 2))
+
+(define-skeleton clojure-boilerplate
+    "My common Clojure file header"
+  nil
+  ";;;; -*- mode: clojure; coding: utf-8; -*-\n"
+  ";;;;\n"
+  ";;;; <description>\n"
+  ";;;; Author: " (progn user-login-name) " (" (progn user-full-name) ")\n"
+  ";;;; Date: " (format-time-string "%Y-%m-%d") "\n"
+  "\n"
+)
+
+(define-auto-insert 'clojure-mode 'clojure-boilerplate)

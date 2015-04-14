@@ -5,6 +5,9 @@
 ;;;;
 ;;;; Parts have been borrowed from her configuration as well.
 
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
 (when (< emacs-major-version 24)
   (error "Initialization hasn't been tested versions of Emacs older than 24.x"))
 
@@ -37,14 +40,12 @@
 
 (package-initialize)
 
-(maybe-install-packages '(ag multiple-cursors uuid flx-ido company))
+(maybe-install-packages '(ag multiple-cursors uuid flx-ido smart-mode-line))
 
 (require 'flx-ido)
 (ido-mode 1)
 (ido-everywhere 1)
 (flx-ido-mode 1)
-
-(global-company-mode)
 
 ;; ag configuration
 (setq ag-reuse-buffers t)
@@ -56,6 +57,7 @@
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 (setq user-full-name "Tom Emerson")
+(setq user-mail-address "temerson@ebsco.com")
 
 ;; Any packages not contained in a package archive are put into ~/emacs/
 (add-to-list 'load-path (expand-file-name "~/emacs"))
@@ -68,7 +70,7 @@
 
 (setq-default indicate-empty-lines t
               require-trailing-newline t
-              truncate-lines t
+              truncate-lines nil
               ediff-diff-options "-w"
               indent-tabs-mode nil)
 
@@ -96,6 +98,8 @@
                       (name . "^\\*completions\\*$")))
          ("dired" (mode . dired-mode))
          ("writing" (or (mode . org-mode)
+                        (mode . markdown-mode)
+                        (mode . adoc-mode)
                         (mode . text-mode)))
          ("lisp" (or (mode . clojure-mode)
                      (mode . lisp-mode)
@@ -144,10 +148,6 @@
 
 (put 'eval-expression 'disabled nil)
 
-; Kyle Jones's filladapt package
-;(require 'filladapt)
-;(add-hook 'text-mode-hook 'turn-on-filladapt-mode)
-
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
@@ -158,10 +158,18 @@
 (when (display-graphic-p)
   (load-theme 'smyx t))
 
-; blackboard is nice too
+;; smart-mode-line
+(sml/setup)
+(sml/apply-theme 'dark)
 
-;(require 'powerline)
-;(powerline-default)
+(dolist (rl '(("^~/Work/" ":Work:")))
+  (add-to-list 'sml/replacer-regexp-list rl t))
+
+
+(auto-insert-mode)
+(setq auto-insert-query nil)
+
+; blackboard is nice too
 
 ;; (add-to-list 'default-frame-alist
 ;;              ;; my old eyes need a bigger font when I'm at my desk on a big screen
@@ -185,19 +193,15 @@
                 "tree-gtags.el"
                 "tree-javascript.el"
                 "tree-lisp.el"
-                "tree-markdown.el"
                 "tree-org.el"
                 "tree-projectile.el"
                 "tree-semanticweb.el"
                 "tree-term.el"
-                "tree-tex.el"
+                "tree-text.el"
                 "tree-vcs.el"
                 "tree-xml.el"
                 "tree-speedbar.el"))
   (load (concat "~/.emacs.d/" file) t))
-
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
 
 (when (display-graphic-p)
     (server-start))

@@ -2,7 +2,6 @@
 
 (require 'speedbar)
 
-
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
@@ -19,3 +18,17 @@
                            (visual-line-mode)
                            (speedbar-add-supported-extension ".org")))
 
+(define-skeleton org-boilerplate
+    "My common Org file header"
+  nil
+  "#+TITLE:   \n"
+  "#+AUTHOR:  " (progn user-full-name) "\n"
+  "#+EMAIL:   " (progn user-mail-address) "\n"
+  "#+STARTUP: showall\n"
+  "\n\n\n\n"
+  "# Local Variables:\n"
+  "# mode: org\n"
+  "# coding: utf-8\n"
+  "# End:\n")
+
+(define-auto-insert 'org-mode 'org-boilerplate)

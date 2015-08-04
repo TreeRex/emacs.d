@@ -33,19 +33,24 @@
 
 (require 'package)
 
-(dolist (p '(("melpa" . "http://melpa.milkbox.net/packages/")
-             ("marmalade" . "http://marmalade-repo.org/packages/")
+(dolist (p '(("marmalade" . "http://marmalade-repo.org/packages/")
+             ("melpa" . "http://melpa.org/packages/")
              ("org" . "http://orgmode.org/elpa/")))
   (add-to-list 'package-archives p t))
 
+(setq package-pinned-packages '((magit . "marmalade")
+                                (org . "org")))
+
 (package-initialize)
 
-(maybe-install-packages '(ag multiple-cursors uuid flx-ido smart-mode-line))
+(maybe-install-packages '(ag multiple-cursors uuid smart-mode-line shrink-whitespace))
 
-(require 'flx-ido)
-(ido-mode 1)
-(ido-everywhere 1)
-(flx-ido-mode 1)
+;; (require 'flx-ido)
+;; (ido-mode 1)
+;; (ido-everywhere 1)
+;; (flx-ido-mode 1)
+
+(yas-global-mode t)
 
 ;; ag configuration
 (setq ag-reuse-buffers t)
@@ -79,8 +84,8 @@
 (global-unset-key "\M-t")
 (global-set-key "\M-t" 'indent-relative)
 
-(require 'doxygen "doxygen" t)
-(require 'ep-utils "ep-utils" t)
+;(require 'doxygen "doxygen" t)
+;(require 'ep-utils "ep-utils" t)
 
 ;; better handling for buffers editing the same file name
 (require 'uniquify)
@@ -99,7 +104,6 @@
          ("dired" (mode . dired-mode))
          ("writing" (or (mode . org-mode)
                         (mode . markdown-mode)
-                        (mode . adoc-mode)
                         (mode . text-mode)))
          ("lisp" (or (mode . clojure-mode)
                      (mode . lisp-mode)
@@ -146,25 +150,25 @@
               (interactive)
               (join-line -1)))
 
+(global-set-key (kbd "C-\\") 'shrink-whitespace)
+
 (put 'eval-expression 'disabled nil)
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
 ;(maybe-install-packages '(noctilux-theme ample-theme soft-stone-theme))
-
-(maybe-install-packages '(smyx-theme warm-night-theme))
+;(maybe-install-packages '(smyx-theme warm-night-theme))
 
 (when (display-graphic-p)
-  (load-theme 'smyx t))
+  (load-theme 'autumn-light t))
 
 ;; smart-mode-line
 (sml/setup)
-(sml/apply-theme 'dark)
+(sml/apply-theme 'light)
 
-(dolist (rl '(("^~/Work/" ":Work:")))
+(dolist (rl '(("^~/Work/" ":W:")))
   (add-to-list 'sml/replacer-regexp-list rl t))
-
 
 (auto-insert-mode)
 (setq auto-insert-query nil)
@@ -177,10 +181,11 @@
 ;;                       (= (display-pixel-height) 1200))
 ;;                  (cons 'font "Source Code Pro-18:weight=medium")
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
+;;
 
 (setq default-frame-alist (append '(
                                     (font . "Fantasque Sans Mono-16:weight=light")
-                                    (width . 110)
+                                    (width . 132)
                                     (height . 45))
                                   default-frame-alist))
 

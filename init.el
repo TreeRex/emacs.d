@@ -198,11 +198,11 @@
                 "tree-gtags.el"
                 "tree-javascript.el"
                 "tree-lisp.el"
+                "tree-markdown.el"
                 "tree-org.el"
                 "tree-projectile.el"
                 "tree-semanticweb.el"
                 "tree-term.el"
-                "tree-text.el"
                 "tree-vcs.el"
                 "tree-xml.el"
                 "tree-speedbar.el"))

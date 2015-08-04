@@ -14,6 +14,12 @@
         (sequence "QUESTION" "|" "ANSWERED")
         (sequence "TASK" "|" "COMPLETE")))
 
+(setq org-babel-awk-command "gawk")
+(org-babel-do-load-languages 'org-babel-load-languages
+                             '((emacs-lisp . t)
+                               (sh . t)
+                               (awk . t)))
+
 (add-hook 'org-mode-hook (lambda ()
                            (visual-line-mode)
                            (speedbar-add-supported-extension ".org")))

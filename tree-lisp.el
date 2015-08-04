@@ -2,11 +2,12 @@
 ;;;;
 ;;;; Lisp configuration
 
-; clj-refactor
-(maybe-install-packages '(clojure-mode mic-paren paredit paren-face dash cider))
+
+(maybe-install-packages '(clojure-mode mic-paren paredit paren-face dash cider
+                          clj-refactor))
 
 (defun add-lisp-hook (func)
-  (add-hooks '(lisp clojure) func))
+  (add-hooks '(lisp clojure emacs-lisp) func))
 
 ;;; General Goodness
 
@@ -22,11 +23,11 @@
 (setq paren-priority 'both)
 
 (global-paren-face-mode)
-;(require 'speedbar)
+(require 'speedbar)
 
 ;;; Common Lisp
 
-;(speedbar-add-supported-extension ".lisp")
+(speedbar-add-supported-extension ".lisp")
 
 ;; Slime is setup via QuickLisp
 ;; (setq slime-net-coding-system 'utf-8-unix)
@@ -64,21 +65,26 @@
 
 (require 'clojure-mode)
 
-;(speedbar-add-supported-extension ".clj")
+(setq-default cljr-suppress-middleware-warnings t)
+
+(speedbar-add-supported-extension ".clj")
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
 
-;; (add-hook 'clojure-mode-hook (lambda ()
-;;                                (clj-refactor-mode 1)
-;;                                (cljr-add-keybindings-with-prefix "C-c m")))
+(add-hook 'clojure-mode-hook (lambda ()
+                               (clj-refactor-mode 1)
+                               (cljr-add-keybindings-with-prefix "C-c m")))
+
+(when (fboundp 'folding-add-to-marks-list)
+  (folding-add-to-marks-list 'clojure-mode ";;{{{" ";;}}}"))
 
 ;; Cider configuration (https://github.com/clojure-emacs/cider)
-;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-;; (add-hook 'cider-repl-mode-hook 'paredit-mode)
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
 
-;(setq nrepl-hide-special-buffers t)
-(setq nrepl-log-messages t)
-;; (setq cider-repl-use-pretty-printing t)
+(setq nrepl-hide-special-buffers nil)
+(setq nrepl-log-messages nil)
+(setq cider-repl-use-pretty-printing t)
 
 (define-clojure-indent
   ;; Compojure
@@ -91,15 +97,3 @@
   (ANY 2)
   (context 2))
 
-(define-skeleton clojure-boilerplate
-    "My common Clojure file header"
-  nil
-  ";;;; -*- mode: clojure; coding: utf-8; -*-\n"
-  ";;;;\n"
-  ";;;; <description>\n"
-  ";;;; Author: " (progn user-login-name) " (" (progn user-full-name) ")\n"
-  ";;;; Date: " (format-time-string "%Y-%m-%d") "\n"
-  "\n"
-)
-
-(define-auto-insert 'clojure-mode 'clojure-boilerplate)

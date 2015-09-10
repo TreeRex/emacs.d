@@ -184,7 +184,7 @@
 ;;
 
 (setq default-frame-alist (append '(
-                                    (font . "Fantasque Sans Mono-16:weight=light")
+                                    (font . "Fantasque Sans Mono-24:weight=light")
                                     (width . 132)
                                     (height . 45))
                                   default-frame-alist))

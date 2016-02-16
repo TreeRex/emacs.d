@@ -39,17 +39,21 @@
   (add-to-list 'package-archives p t))
 
 (setq package-pinned-packages '((magit . "marmalade")
-                                (org . "org")))
+                                (org . "org")
+                                (org-plus-contrib . "org")))
 
 (package-initialize)
 
-(maybe-install-packages '(ag multiple-cursors uuid smart-mode-line shrink-whitespace))
+(maybe-install-packages '(ag multiple-cursors uuid smart-mode-line
+                             shrink-whitespace page-break-lines))
 
 ;; (require 'flx-ido)
 ;; (ido-mode 1)
 ;; (ido-everywhere 1)
 ;; (flx-ido-mode 1)
 
+(global-page-break-lines-mode)
+(add-to-list 'page-break-lines-modes 'clojure-mode)
 (yas-global-mode t)
 
 ;; ag configuration
@@ -66,6 +70,7 @@
 
 ;; Any packages not contained in a package archive are put into ~/emacs/
 (add-to-list 'load-path (expand-file-name "~/emacs"))
+(add-to-list 'custom-theme-load-path (expand-file-name "~/emacs/emacs-color-theme-solarized"))
 
 (dolist (p (list "/usr/local/bin" (expand-file-name "~/bin")))
   (add-to-list 'exec-path p))
@@ -77,7 +82,8 @@
               require-trailing-newline t
               truncate-lines nil
               ediff-diff-options "-w"
-              indent-tabs-mode nil)
+              indent-tabs-mode nil
+              yank-excluded-properties t)
 
 (setq-default ispell-program-name "aspell")
 
@@ -157,17 +163,17 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-;(maybe-install-packages '(noctilux-theme ample-theme soft-stone-theme))
-;(maybe-install-packages '(smyx-theme warm-night-theme))
+(add-to-list 'custom-theme-load-path (expand-file-name "~/emacs/emacs-color-theme-solarized"))
 
 (when (display-graphic-p)
-  (load-theme 'autumn-light t))
+  (load-theme 'solarized t))
 
 ;; smart-mode-line
 (sml/setup)
 (sml/apply-theme 'light)
 
-(dolist (rl '(("^~/Work/" ":W:")))
+(dolist (rl '(("^~/Work/" ":W:")
+              ("^~/Projects/" ":P:")))
   (add-to-list 'sml/replacer-regexp-list rl t))
 
 (auto-insert-mode)
@@ -184,7 +190,7 @@
 ;;
 
 (setq default-frame-alist (append '(
-                                    (font . "Fantasque Sans Mono-24:weight=light")
+                                    (font . "Source Code Pro-16:weight=medium")
                                     (width . 132)
                                     (height . 45))
                                   default-frame-alist))
@@ -195,10 +201,12 @@
                 "tree-dired.el"
                 "tree-dylan.el"
                 "tree-folding.el"
-                "tree-gtags.el"
+                ;"tree-gtags.el"
+;                "tree-helm.el"
                 "tree-javascript.el"
                 "tree-lisp.el"
                 "tree-markdown.el"
+                "tree-octave.el"
                 "tree-org.el"
                 "tree-projectile.el"
                 "tree-semanticweb.el"

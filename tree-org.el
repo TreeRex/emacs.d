@@ -4,10 +4,12 @@
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
+;(global-set-key "\C-ca" 'org-agenda)
+;(global-set-key "\C-cb" 'org-iswitchb)
 (setq org-clock-idle-time 10
       org-log-done 'time)
+
+(setq org-export-backends '(ascii html latex confluence md))
 
 (setq org-todo-keywords
       '((sequence "TODO" "ONGOING" "|" "DONE")
@@ -18,7 +20,8 @@
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((emacs-lisp . t)
                                (sh . t)
-                               (awk . t)))
+                               (awk . t)
+                               (clojure . t)))
 
 (add-hook 'org-mode-hook (lambda ()
                            (visual-line-mode)

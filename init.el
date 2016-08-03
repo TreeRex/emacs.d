@@ -38,9 +38,9 @@
              ("org" . "http://orgmode.org/elpa/")))
   (add-to-list 'package-archives p t))
 
-(setq package-pinned-packages '((magit . "marmalade")
-                                (org . "org")
-                                (org-plus-contrib . "org")))
+;; (setq package-pinned-packages '((magit . "marmalade")
+;;                                 (org . "org")
+;;                                 (org-plus-contrib . "org")))
 
 (package-initialize)
 
@@ -70,7 +70,6 @@
 
 ;; Any packages not contained in a package archive are put into ~/emacs/
 (add-to-list 'load-path (expand-file-name "~/emacs"))
-(add-to-list 'custom-theme-load-path (expand-file-name "~/emacs/emacs-color-theme-solarized"))
 
 (dolist (p (list "/usr/local/bin" (expand-file-name "~/bin")))
   (add-to-list 'exec-path p))
@@ -166,11 +165,11 @@
 (add-to-list 'custom-theme-load-path (expand-file-name "~/emacs/emacs-color-theme-solarized"))
 
 (when (display-graphic-p)
-  (load-theme 'solarized t))
+  (load-theme 'zenburn t))
 
 ;; smart-mode-line
 (sml/setup)
-(sml/apply-theme 'light)
+;(sml/apply-theme 'light)
 
 (dolist (rl '(("^~/Work/" ":W:")
               ("^~/Projects/" ":P:")))
@@ -179,7 +178,7 @@
 (auto-insert-mode)
 (setq auto-insert-query nil)
 
-; blackboard is nice too
+
 
 ;; (add-to-list 'default-frame-alist
 ;;              ;; my old eyes need a bigger font when I'm at my desk on a big screen
@@ -189,17 +188,18 @@
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 ;;
 
-(setq default-frame-alist (append '(
-                                    (font . "Source Code Pro-16:weight=medium")
+(setq default-frame-alist (append '((font . "Source Code Pro-18:weight=medium")
                                     (width . 132)
                                     (height . 45))
                                   default-frame-alist))
+
+
 
 (dolist (file '(
                 "tree-advice.el"
                 "tree-cpp.el"
                 "tree-dired.el"
-                "tree-dylan.el"
+;                "tree-dylan.el"
                 "tree-folding.el"
                 ;"tree-gtags.el"
 ;                "tree-helm.el"

@@ -3,7 +3,7 @@
 ;;;; Lisp configuration
 
 
-(maybe-install-packages '(clojure-mode mic-paren paredit paren-face dash cider))
+(maybe-install-packages '(clojure-mode mic-paren paredit paren-face dash cider clj-refactor))
 
 (defun add-lisp-hook (func)
   (add-hooks '(lisp clojure emacs-lisp) func))
@@ -64,7 +64,8 @@
 
 (require 'clojure-mode)
 
-(setq-default cljr-suppress-middleware-warnings t)
+(setq-default cljr-suppress-middleware-warnings t
+              cljr-warn-on-eval nil)
 
 (speedbar-add-supported-extension ".clj")
 (add-to-list 'auto-mode-alist '("\\.cljs?$" . clojure-mode))
@@ -73,14 +74,26 @@
 (when (fboundp 'folding-add-to-marks-list)
   (folding-add-to-marks-list 'clojure-mode ";;{{{" ";;}}}"))
 
-;; Cider configuration (https://github.com/clojure-emacs/cider)
-(add-hook 'cider-mode-hook #'eldoc-mode)
-(add-hook 'cider-repl-mode-hook 'paredit-mode)
+(defun my-clojure-mode-hook ()
+  (eldoc-mode)
+  (company-mode)
+  (clj-refactor-mode 1)
+  (cljr-add-keybindings-with-prefix "C-c C-m"))
 
-(setq nrepl-hide-special-buffers nil)
-(setq nrepl-log-messages nil)
-(setq cider-repl-use-pretty-printing t)
-(setq cider-repl-prompt-function #'cider-repl-prompt-abbreviated)
+(defun my-cider-repl-mode-hook ()
+  (company-mode)
+  (paredit-mode))
+
+;; Cider configuration (https://github.com/clojure-emacs/cider)
+(add-hook 'cider-mode-hook #'my-clojure-mode-hook)
+(add-hook 'cider-repl-mode-hook #'my-cider-repl-mode-hook)
+
+(setq nrepl-hide-special-buffers nil
+      nrepl-log-messages nil)
+
+(setq cider-repl-use-pretty-printing t
+      cider-repl-prompt-function #'cider-repl-prompt-abbreviated
+      cider-repl-display-help-banner nil)
 
 (define-clojure-indent
   ;; Compojure
@@ -100,5 +113,7 @@
   (future-fact 'defun)
   (tabular 'defun)
   (against-background 'defun)
-  (provided 0))
+  (provided 0)
+  ;; Custom Macros
+  (in-thread-context :defn))
 

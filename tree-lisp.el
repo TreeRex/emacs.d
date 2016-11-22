@@ -13,7 +13,8 @@
 (eldoc-mode 1)
 
 (add-lisp-hook (lambda ()
-                 (paredit-mode 1)))
+                 (paredit-mode 1)
+                 (form-feed-mode)))
 
 ;(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 0)))
 

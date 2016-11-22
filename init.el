@@ -38,14 +38,13 @@
              ("org" . "http://orgmode.org/elpa/")))
   (add-to-list 'package-archives p t))
 
-;; (setq package-pinned-packages '((magit . "marmalade")
-;;                                 (org . "org")
-;;                                 (org-plus-contrib . "org")))
-
 (package-initialize)
 
 (maybe-install-packages '(ag multiple-cursors uuid smart-mode-line
-                             shrink-whitespace page-break-lines))
+                             shrink-whitespace
+                             highlight-chars))
+
+(require 'highlight-chars)
 
 ;; (require 'flx-ido)
 ;; (ido-mode 1)
@@ -145,6 +144,7 @@
 ;;; Font-lock stuff
 (global-font-lock-mode)
 (setq font-lock-maximum-decoration '((c-mode . 1) (t . 3) (clojure-mode . t)))
+;(add-hook 'font-lock-mode-hook 'hc-highlight-tabs)
 
 ;;; Key bindings
 (global-set-key "\M-g" 'goto-line)
@@ -188,7 +188,7 @@
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 ;;
 
-(setq default-frame-alist (append '((font . "Source Code Pro-18:weight=medium")
+(setq default-frame-alist (append '((font . "Inconsolata-24:weight=medium")
                                     (width . 132)
                                     (height . 45))
                                   default-frame-alist))
@@ -218,3 +218,5 @@
 
 (when (display-graphic-p)
     (server-start))
+
+

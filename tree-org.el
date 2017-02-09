@@ -13,7 +13,7 @@
 
 (setq org-todo-keywords
       '((sequence "TODO" "ONGOING" "|" "DONE")
-        (sequence "QUESTION" "|" "ANSWERED")
+        (sequence "QUESTION(q)" "|" "ANSWERED(a)")
         (sequence "TASK" "|" "COMPLETE")))
 
 (setq org-babel-awk-command "gawk")

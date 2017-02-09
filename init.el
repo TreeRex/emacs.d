@@ -5,6 +5,10 @@
 ;;;;
 ;;;; Parts have been borrowed from her configuration as well.
 
+;;; https://github.com/jwiegley/use-package
+;;; https://github.com/CSRaghunandan/.emacs.d/blob/master/init.el
+;;; https://github.com/angrybacon/dotemacs
+
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 
@@ -41,7 +45,7 @@
 (package-initialize)
 
 (maybe-install-packages '(ag multiple-cursors uuid smart-mode-line
-                             shrink-whitespace
+                             shrink-whitespace form-feed
                              highlight-chars))
 
 (require 'highlight-chars)
@@ -51,6 +55,7 @@
 ;; (ido-everywhere 1)
 ;; (flx-ido-mode 1)
 
+(global-hl-line-mode)
 (global-page-break-lines-mode)
 (add-to-list 'page-break-lines-modes 'clojure-mode)
 (yas-global-mode t)
@@ -162,7 +167,9 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-(add-to-list 'custom-theme-load-path (expand-file-name "~/emacs/emacs-color-theme-solarized"))
+;;; darkokai
+;;; monokai
+;;; zenburn
 
 (when (display-graphic-p)
   (load-theme 'zenburn t))
@@ -190,10 +197,10 @@
 
 (setq default-frame-alist (append '((font . "Inconsolata-24:weight=medium")
                                     (width . 132)
-                                    (height . 45))
+                                    (height . 40))
                                   default-frame-alist))
 
-
+(setq plantuml-jar-path "~/tools/plantuml.jar")
 
 (dolist (file '(
                 "tree-advice.el"

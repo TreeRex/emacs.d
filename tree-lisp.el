@@ -14,7 +14,8 @@
 
 (add-lisp-hook (lambda ()
                  (paredit-mode 1)
-                 (form-feed-mode)))
+                 (form-feed-mode)
+                 (rainbow-delimiters-mode)))
 
 ;(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 0)))
 

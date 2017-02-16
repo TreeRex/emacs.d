@@ -1,4 +1,6 @@
-;;;; -*- Mode: Emacs-Lisp -*-
+;;;; -*- mode:emacs-lisp; lexical-binding:t -*-
+
+;;;; CAREFUL: THIS IS A MAJOR REORGANIZATION OF MY EMACS CONFIGURATION
 
 ;;;; The reorganization of my Emacs init is based on Bodil Stokke's emacs.d
 ;;;; found at https://github.com/bodil/emacs.d
@@ -9,18 +11,24 @@
 ;;; https://github.com/CSRaghunandan/.emacs.d/blob/master/init.el
 ;;; https://github.com/angrybacon/dotemacs
 
+(when (version< emacs-version "24")
+  (unless (yes-or-no-p "Your Emacs old and may fail. Continue? ")
+    (kill-emacs)))
+
+;;; Effectively disable GC during initialization
+(defvar gc-cons-threshold--orig gc-cons-threshold)
+(setq gc-cons-threshold (* 100 1024 1024))
+
+;;; Store customized variables in their own file
 (setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
+(load custom-file 'noerror 'nomessage)
 
-(when (< emacs-major-version 24)
-  (error "Initialization hasn't been tested versions of Emacs older than 24.x"))
-
-;; load common functions ahead of everything else
+;;; Common functions ahead of everything else
 (load "~/.emacs.d/tree-defuns.el")
 
-(dolist (m '(tool-bar-mode scroll-bar-mode))
-  (when (fboundp m)
-    (funcall m -1)))
+;;; ??? Where should I group these?
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 
 (setq inhibit-startup-message t)	;I know it's emacs, silly...
 
@@ -33,50 +41,83 @@
 (prefer-coding-system 'utf-8)
 (set-language-environment "utf-8")
 
-;;; Package manager support
-
+;;; Package manager support.
 (require 'package)
-
-(dolist (p '(("marmalade" . "http://marmalade-repo.org/packages/")
-             ("melpa" . "http://melpa.org/packages/")
+(dolist (p '(("melpa" . "http://melpa.org/packages/")
              ("org" . "http://orgmode.org/elpa/")))
   (add-to-list 'package-archives p t))
-
 (package-initialize)
 
-(maybe-install-packages '(ag multiple-cursors uuid smart-mode-line
-                             shrink-whitespace form-feed
-                             highlight-chars))
+;;; safely load use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile (require 'use-package))
+(require 'diminish)                     ;built-in
+(setq-default use-package-always-ensure t)
 
-(require 'highlight-chars)
+;;;;
+;;;; use-package only from here on
+;;;;
+
+;; this requires that The Silver Searcher be in the path
+(use-package ag                         ;search
+  :init
+  (setq ag-reuse-buffers t))
+
+(use-package multiple-cursors           ;editing
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+         ("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)))
+
+(use-package shrink-whitespace          ;editing
+  :bind (("C-\\" . shrink-whitespace)))
+
+(use-package uuid)                      ;programming
+(use-package smart-mode-line            ;visual/modeline
+  :config
+  (sml/setup)
+  (sml/apply-theme 'light)
+  (dolist (rl '(("^~/Work/" ":W:")
+              ("^~/Projects/" ":P:")))
+    (add-to-list 'sml/replacer-regexp-list rl t)))
+
+
+;; displays  as a horizontal line (an alternate implementation is
+;; page-break-lines)
+(use-package form-feed)                 ;visual/buffer
+
+(global-hl-line-mode)                   ;visual/buffer (built-in)
+
+
+;;;
+;;; ido-mode (built-in) I seem to have commented this out, so I'm not
+;;; going to do anything with it now
 
 ;; (require 'flx-ido)
 ;; (ido-mode 1)
 ;; (ido-everywhere 1)
 ;; (flx-ido-mode 1)
 
-(global-hl-line-mode)
-(global-page-break-lines-mode)
-(add-to-list 'page-break-lines-modes 'clojure-mode)
-(yas-global-mode t)
+;;;
+;;; YASnippet
+;;;
 
-;; ag configuration
-(setq ag-reuse-buffers t)
+(use-package yasnippet
+  :config
+  (yas-global-mode t))
 
-;; multiple-cursor configuration
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 (setq user-full-name "Tom Emerson")
+;; this should be set based on which machine I'm working on
 (setq user-mail-address "temerson@ebsco.com")
 
 ;; Any packages not contained in a package archive are put into ~/emacs/
 (add-to-list 'load-path (expand-file-name "~/emacs"))
 
-(dolist (p (list "/usr/local/bin" (expand-file-name "~/bin")))
-  (add-to-list 'exec-path p))
+(unless (string-equal system-type "windows-nt")
+  (dolist (p (list "/usr/local/bin" (expand-file-name "~/bin")))
+    (add-to-list 'exec-path p)))
 
 ; I know some files are really large, big deal.
 (setq large-file-warning-threshold nil)
@@ -84,25 +125,23 @@
 (setq-default indicate-empty-lines t
               require-trailing-newline t
               truncate-lines nil
-              ediff-diff-options "-w"
               indent-tabs-mode nil
               yank-excluded-properties t)
 
+; macOS and Linux only?
 (setq-default ispell-program-name "aspell")
 
 (global-unset-key "\M-t")
 (global-set-key "\M-t" 'indent-relative)
 
-;(require 'doxygen "doxygen" t)
-;(require 'ep-utils "ep-utils" t)
-
-;; better handling for buffers editing the same file name
+;; better handling for buffers editing the same file name (built-in)
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-;; use ibuffer
+;;;
+;;; Use ibuffer for better buffer browsing (built-in)
+;;;
 (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
-
 (setq ibuffer-default-sorting-mode 'major-mode)
 (setq ibuffer-saved-filter-groups
       '(("default"
@@ -123,33 +162,28 @@
             (ibuffer-switch-to-saved-filter-groups "default")))
 
 
-;; (setq display-time-day-and-date nil
-;;       display-time-24hr-format t
-;;       display-time-format "%R (%d %b)")
-;; (display-time)
-
 (blink-cursor-mode 1)
 (column-number-mode t)
 (show-paren-mode t)
 (transient-mark-mode t)                 ;show region between point & mark
 
 (unless (display-graphic-p)
-    (global-set-key "\C-h" 'delete-backward-char))
+  (global-set-key "\C-h" 'delete-backward-char))
 
 (setq make-backup-files t)
-
 (setq require-final-newline t)
 (setq backup-by-copying-when-linked t)  ;preserve links!
-
 (setq default-tab-width 4)
 
-(setq compilation-read-command nil)     ;don't ask me for the compiler command-line
-(global-set-key [f7] 'compile)
-
+;;;
 ;;; Font-lock stuff
+;;;
 (global-font-lock-mode)
-(setq font-lock-maximum-decoration '((c-mode . 1) (t . 3) (clojure-mode . t)))
-;(add-hook 'font-lock-mode-hook 'hc-highlight-tabs)
+(setq font-lock-maximum-decoration t)
+
+;; provides toggle-highlight-tabs and toggle-highlight-trailing-whitespace 
+(use-package highlight-chars)           ;visual/buffer
+
 
 ;;; Key bindings
 (global-set-key "\M-g" 'goto-line)
@@ -160,10 +194,7 @@
               (interactive)
               (join-line -1)))
 
-(global-set-key (kbd "C-\\") 'shrink-whitespace)
-
 (put 'eval-expression 'disabled nil)
-
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
@@ -171,19 +202,11 @@
 ;;; monokai
 ;;; zenburn
 
-(when (display-graphic-p)
-  (load-theme 'zenburn t))
+;; (when (display-graphic-p)
+;;   (load-theme 'zenburn t))
 
-;; smart-mode-line
-(sml/setup)
-;(sml/apply-theme 'light)
-
-(dolist (rl '(("^~/Work/" ":W:")
-              ("^~/Projects/" ":P:")))
-  (add-to-list 'sml/replacer-regexp-list rl t))
-
-(auto-insert-mode)
-(setq auto-insert-query nil)
+;(auto-insert-mode)
+;(setq auto-insert-query nil)
 
 
 
@@ -195,35 +218,36 @@
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 ;;
 
-(setq default-frame-alist (append '((font . "Inconsolata-24:weight=medium")
-                                    (width . 132)
-                                    (height . 40))
-                                  default-frame-alist))
+;; (setq default-frame-alist (append '((font . "Inconsolata-24:weight=medium")
+;;                                     (width . 132)
+;;                                     (height . 40))
+;;                                   default-frame-alist))
 
-(setq plantuml-jar-path "~/tools/plantuml.jar")
+;(setq plantuml-jar-path "~/tools/plantuml.jar")
 
-(dolist (file '(
-                "tree-advice.el"
-                "tree-cpp.el"
-                "tree-dired.el"
-;                "tree-dylan.el"
-                "tree-folding.el"
-                ;"tree-gtags.el"
-;                "tree-helm.el"
-                "tree-javascript.el"
-                "tree-lisp.el"
-                "tree-markdown.el"
-                "tree-octave.el"
-                "tree-org.el"
-                "tree-projectile.el"
-                "tree-semanticweb.el"
-                "tree-term.el"
-                "tree-vcs.el"
-                "tree-xml.el"
-                "tree-speedbar.el"))
-  (load (concat "~/.emacs.d/" file) t))
+;; (dolist (file '(
+;;                 "tree-advice.el"
+;;                 "tree-cpp.el"
+;;                 "tree-dired.el"
+;; ;                "tree-dylan.el"
+;;                 "tree-folding.el"
+;;                 ;"tree-gtags.el"
+;; ;                "tree-helm.el"
+;;                 "tree-javascript.el"
+;;                 "tree-lisp.el"
+;;                 "tree-markdown.el"
+;;                 "tree-octave.el"
+;;                 "tree-org.el"
+;;                 "tree-projectile.el"
+;;                 "tree-semanticweb.el"
+;;                 "tree-term.el"
+;;                 "tree-vcs.el"
+;;                 "tree-xml.el"
+;;                 "tree-speedbar.el"))
+;;   (load (concat "~/.emacs.d/" file) t))
 
-(when (display-graphic-p)
-    (server-start))
+;; (when (display-graphic-p)
+;;     (server-start))
 
 
+(setq gc-cons-threshold gc-cons-threshold--orig)

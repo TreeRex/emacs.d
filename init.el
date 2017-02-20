@@ -24,16 +24,54 @@
 (load custom-file 'noerror 'nomessage)
 
 ;;; Common functions ahead of everything else
-(load "~/.emacs.d/tree-defuns.el")
+(load (expand-file-name "tree-defuns.el" user-emacs-directory))
 
-;;; ??? Where should I group these?
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+;;; Load .secret.el if it exists. That file should not be put into git.
+;;; Use it to hold sensitive information like your user-mail-address.
+(let ((secret.el (expand-file-name ".secret.el" user-emacs-directory)))
+  (when (file-exists-p secret.el)
+    (load secret.el)))
 
-(setq inhibit-startup-message t)	;I know it's emacs, silly...
+
+;;; Default values
 
-(setq frame-title-format "%b %+%+ %f %n")
+(tool-bar-mode 'yuck)
+(scroll-bar-mode 'ick)
+(blink-cursor-mode 1)
+(column-number-mode 1)
+(show-paren-mode 1)
+(transient-mark-mode 1)
+(global-hl-line-mode 1)
 
+(put 'eval-expression 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
+(setq frame-title-format "%b %+%+ %f %n"
+      make-backup-files t
+      require-final-newline t
+      backup-by-copying-when-linked t
+      tab-width 4
+      inhibit-startup-message t
+      large-file-warning-threshold nil)
+
+;(setq plantuml-jar-path "~/tools/plantuml.jar")
+
+;; Any packages not contained in a package archive are put into ~/emacs/
+(add-to-list 'load-path (expand-file-name "~/emacs"))
+
+(unless (string-equal system-type "windows-nt")
+  (dolist (p (list "/usr/local/bin" (expand-file-name "~/bin")))
+    (add-to-list 'exec-path p)))
+
+(setq-default indicate-empty-lines t
+              require-trailing-newline t
+              truncate-lines nil
+              indent-tabs-mode nil
+              yank-excluded-properties t
+              ispell-program-name "aspell")
+
+
 ;;; Ubiquitous Unicode
 
 (set-terminal-coding-system 'utf-8)
@@ -41,6 +79,22 @@
 (prefer-coding-system 'utf-8)
 (set-language-environment "utf-8")
 
+
+;;; Custom key bindings
+(global-unset-key "\M-t")               ;necessary?
+(global-set-key "\M-t" 'indent-relative)
+(global-set-key "\M-g" 'goto-line)
+(global-set-key "\e\e" 'eval-expression)
+
+(unless (display-graphic-p)
+  (global-set-key "\C-h" 'delete-backward-char))
+
+
+;;; Random stuff I don't know what to do with
+;(auto-insert-mode)
+;(setq auto-insert-query nil)
+
+
 ;;; Package manager support.
 (require 'package)
 (dolist (p '(("melpa" . "http://melpa.org/packages/")
@@ -56,9 +110,9 @@
 (require 'diminish)                     ;built-in
 (setq-default use-package-always-ensure t)
 
-;;;;
+
 ;;;; use-package only from here on
-;;;;
+
 
 ;; this requires that The Silver Searcher be in the path
 (use-package ag                         ;search
@@ -74,30 +128,30 @@
   :bind (("C-\\" . shrink-whitespace)))
 
 (use-package uuid)                      ;programming
+
 (use-package smart-mode-line            ;visual/modeline
   :config
   (sml/setup)
   (sml/apply-theme 'light)
   (dolist (rl '(("^~/Work/" ":W:")
-              ("^~/Projects/" ":P:")))
+                ("^~/Projects/" ":P:")))
     (add-to-list 'sml/replacer-regexp-list rl t)))
 
 
-;; displays  as a horizontal line (an alternate implementation is
+;; displays ^L as a horizontal line (an alternate implementation is
 ;; page-break-lines)
 (use-package form-feed)                 ;visual/buffer
 
-(global-hl-line-mode)                   ;visual/buffer (built-in)
-
-
-;;;
 ;;; ido-mode (built-in) I seem to have commented this out, so I'm not
 ;;; going to do anything with it now
 
-;; (require 'flx-ido)
-;; (ido-mode 1)
-;; (ido-everywhere 1)
-;; (flx-ido-mode 1)
+(setq-default ido-create-new-buffer 'always)
+(ido-mode 1)
+(ido-everywhere 1)
+
+(use-package flx-ido
+  :config
+  (flx-ido-mode 1))
 
 ;;;
 ;;; YASnippet
@@ -106,33 +160,6 @@
 (use-package yasnippet
   :config
   (yas-global-mode t))
-
-
-(setq user-full-name "Tom Emerson")
-;; this should be set based on which machine I'm working on
-(setq user-mail-address "temerson@ebsco.com")
-
-;; Any packages not contained in a package archive are put into ~/emacs/
-(add-to-list 'load-path (expand-file-name "~/emacs"))
-
-(unless (string-equal system-type "windows-nt")
-  (dolist (p (list "/usr/local/bin" (expand-file-name "~/bin")))
-    (add-to-list 'exec-path p)))
-
-; I know some files are really large, big deal.
-(setq large-file-warning-threshold nil)
-
-(setq-default indicate-empty-lines t
-              require-trailing-newline t
-              truncate-lines nil
-              indent-tabs-mode nil
-              yank-excluded-properties t)
-
-; macOS and Linux only?
-(setq-default ispell-program-name "aspell")
-
-(global-unset-key "\M-t")
-(global-set-key "\M-t" 'indent-relative)
 
 ;; better handling for buffers editing the same file name (built-in)
 (require 'uniquify)
@@ -161,19 +188,8 @@
           (lambda ()
             (ibuffer-switch-to-saved-filter-groups "default")))
 
-
-(blink-cursor-mode 1)
-(column-number-mode t)
-(show-paren-mode t)
-(transient-mark-mode t)                 ;show region between point & mark
-
-(unless (display-graphic-p)
-  (global-set-key "\C-h" 'delete-backward-char))
-
-(setq make-backup-files t)
-(setq require-final-newline t)
-(setq backup-by-copying-when-linked t)  ;preserve links!
-(setq default-tab-width 4)
+
+;;; Pretty Pretty
 
 ;;;
 ;;; Font-lock stuff
@@ -184,31 +200,9 @@
 ;; provides toggle-highlight-tabs and toggle-highlight-trailing-whitespace 
 (use-package highlight-chars)           ;visual/buffer
 
-
-;;; Key bindings
-(global-set-key "\M-g" 'goto-line)
-(global-set-key "\e\e" 'eval-expression)
-; from http://whattheemacsd.com/
-(global-set-key (kbd "M-j")
-            (lambda ()
-              (interactive)
-              (join-line -1)))
-
-(put 'eval-expression 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
-
-;;; darkokai
-;;; monokai
-;;; zenburn
-
-;; (when (display-graphic-p)
-;;   (load-theme 'zenburn t))
-
-;(auto-insert-mode)
-;(setq auto-insert-query nil)
-
-
+(use-package zenburn-theme
+  :config
+  (load-theme 'zenburn t))
 
 ;; (add-to-list 'default-frame-alist
 ;;              ;; my old eyes need a bigger font when I'm at my desk on a big screen
@@ -218,12 +212,10 @@
 ;;                  (cons 'font "Source Code Pro-14:weight=medium")))
 ;;
 
-;; (setq default-frame-alist (append '((font . "Inconsolata-24:weight=medium")
-;;                                     (width . 132)
-;;                                     (height . 40))
-;;                                   default-frame-alist))
-
-;(setq plantuml-jar-path "~/tools/plantuml.jar")
+(setq default-frame-alist (append '((font . "Inconsolata-24:weight=medium")
+                                    (width . 96)
+                                    (height . 32))
+                                  default-frame-alist))
 
 ;; (dolist (file '(
 ;;                 "tree-advice.el"
@@ -246,8 +238,7 @@
 ;;                 "tree-speedbar.el"))
 ;;   (load (concat "~/.emacs.d/" file) t))
 
-;; (when (display-graphic-p)
-;;     (server-start))
-
+(when (display-graphic-p)
+    (server-start))
 
 (setq gc-cons-threshold gc-cons-threshold--orig)

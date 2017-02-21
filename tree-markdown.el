@@ -1,13 +1,17 @@
-;;;; -*- mode: EmacsLisp -*-
+;;;; -*- mode:emacs-lisp; lexical-binding:t; coding:utf-8 -*-
 
 (require 'speedbar)
-(maybe-install-packages '(markdown-mode))
 
-(speedbar-add-supported-extension ".md")
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
 
-(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-(add-hook 'markdown-mode-hook (lambda ()
-                                (visual-line-mode)))
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode))
+
+  :config
+  (speedbar-add-supported-extension ".md")
+  (add-hook 'markdown-mode-hook (lambda ()
+                                  (visual-line-mode))))
 
 
 

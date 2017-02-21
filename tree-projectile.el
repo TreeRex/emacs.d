@@ -1,6 +1,6 @@
-(maybe-install-packages '(projectile))
+;;;; -*- mode:emacs-lisp; lexical-binding:t; coding:utf-8 -*-
 
-(eval-after-load "projectile"
-  '(add-to-list 'projectile-globally-ignored-directories ".svn"))
-
-(projectile-global-mode)
+(use-package projectile
+  :config
+  (add-to-list 'projectile-globally-ignored-directories ".svn")
+  (projectile-global-mode))

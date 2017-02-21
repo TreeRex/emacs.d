@@ -90,9 +90,9 @@
   (global-set-key "\C-h" 'delete-backward-char))
 
 
-;;; Random stuff I don't know what to do with
-;(auto-insert-mode)
-;(setq auto-insert-query nil)
+;;; file templates and the like
+(auto-insert-mode 1)
+(setq auto-insert-query t)
 
 
 ;;; Package manager support.
@@ -223,10 +223,10 @@
                 ;;                "tree-helm.el"
                 ;;                "tree-javascript.el"
                 "tree-lisp.el"
-                ;;                "tree-markdown.el"
+                "tree-markdown.el"
                 ;;                "tree-octave.el"
-                ;;                "tree-org.el"
-                ;;                "tree-projectile.el"
+                "tree-org.el"
+                "tree-projectile.el"
                 ;;                "tree-semanticweb.el"
                 ;;                "tree-term.el"
                 ;;                "tree-xml.el"

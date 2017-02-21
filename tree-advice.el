@@ -1,4 +1,4 @@
-;;;; -*- Mode: Emacs-Lisp -*-
+;;;; -*- mode:emacs-lisp; lexical-binding:t; coding:utf-8 -*-
 ;;;;
 ;;;; Advice to save me from myself
 
@@ -6,7 +6,8 @@
 
 ;; http://timothypratley.blogspot.com/2015/07/seven-specialty-emacs-settings-with-big.html
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-           (flet ((process-list ())) ad-do-it))
+  "Kill emacs even if there are processes running."
+  (cl-flet ((process-list ())) ad-do-it))
 
 (defadvice kill-region (around safe-kill-region)
   "If the size of the region is greater than 1K verify the kill."

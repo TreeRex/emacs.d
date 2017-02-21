@@ -1,4 +1,4 @@
-;;;; -*- mode:emacs-lisp; lexical-binding:t -*-
+;;;; -*- mode:emacs-lisp; lexical-binding:t; coding:utf-8 -*-
 
 ;;;; CAREFUL: THIS IS A MAJOR REORGANIZATION OF MY EMACS CONFIGURATION
 
@@ -17,7 +17,7 @@
 
 ;;; Effectively disable GC during initialization
 (defvar gc-cons-threshold--orig gc-cons-threshold)
-(setq gc-cons-threshold (* 100 1024 1024))
+(setq gc-cons-threshold (* 200 1024 1024))
 
 ;;; Store customized variables in their own file
 (setq custom-file "~/.emacs.d/custom.el")
@@ -113,7 +113,6 @@
 
 ;;;; use-package only from here on
 
-
 ;; this requires that The Silver Searcher be in the path
 (use-package ag                         ;search
   :init
@@ -152,10 +151,6 @@
 (use-package flx-ido
   :config
   (flx-ido-mode 1))
-
-;;;
-;;; YASnippet
-;;;
 
 (use-package yasnippet
   :config
@@ -217,26 +212,27 @@
                                     (height . 32))
                                   default-frame-alist))
 
-;; (dolist (file '(
-;;                 "tree-advice.el"
-;;                 "tree-cpp.el"
-;;                 "tree-dired.el"
-;; ;                "tree-dylan.el"
-;;                 "tree-folding.el"
-;;                 ;"tree-gtags.el"
-;; ;                "tree-helm.el"
-;;                 "tree-javascript.el"
-;;                 "tree-lisp.el"
-;;                 "tree-markdown.el"
-;;                 "tree-octave.el"
-;;                 "tree-org.el"
-;;                 "tree-projectile.el"
-;;                 "tree-semanticweb.el"
-;;                 "tree-term.el"
-;;                 "tree-vcs.el"
-;;                 "tree-xml.el"
-;;                 "tree-speedbar.el"))
-;;   (load (concat "~/.emacs.d/" file) t))
+(dolist (file '(
+                "tree-advice.el"
+                "tree-git.el"
+                ;;                "tree-cpp.el"
+                ;;                "tree-dired.el"
+                ;;                "tree-dylan.el"
+                ;;                "tree-folding.el"
+                ;;                "tree-gtags.el"
+                ;;                "tree-helm.el"
+                ;;                "tree-javascript.el"
+                "tree-lisp.el"
+                ;;                "tree-markdown.el"
+                ;;                "tree-octave.el"
+                ;;                "tree-org.el"
+                ;;                "tree-projectile.el"
+                ;;                "tree-semanticweb.el"
+                ;;                "tree-term.el"
+                ;;                "tree-xml.el"
+                ;;                "tree-speedbar.el"
+                ))
+  (load (concat "~/.emacs.d/" file) t))
 
 (when (display-graphic-p)
     (server-start))

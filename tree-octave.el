@@ -1,5 +1,6 @@
-;;; tree-octave.el --- Support for GNU Octave        -*- lexical-binding: t; -*-
+;;;; -*- mode:emacs-lisp; lexical-binding:t; coding:utf-8 -*-
 
-;; this will conflict with ObjC mode...
+;; Octave is built-in. 
+(require 'octave)
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
 

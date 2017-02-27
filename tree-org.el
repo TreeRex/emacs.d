@@ -2,11 +2,23 @@
 
 (require 'speedbar)
 
+;;; Org is a RPITA because it is built into Emacs and is loaded by
+;;; (package-initialize) before the use-package call here. See
+;;; <https://github.com/jwiegley/use-package/issues/319> for work-arounds and
+;;; stuff.
+;;;
+;;; Possible future additions:
+;;;   - Projectile integration: https://github.com/IvanMalison/org-projectile
+;;; These are part of the org+contrib repo, see init.el
+;;;   - Decision management: http://orgmode.org/worg/org-contrib/org-choose.html
+;;;   - Git links: http://orgmode.org/worg/org-contrib/org-git-link.html
+
 (use-package org
-  :commands (org-store-link)
-  :bind (("\C-cl" . org-store-link))
+  :ensure org-plus-contrib
+  :bind (("\C-cc" . org-capture)) 
   :config
   (setq org-clock-idle-time 10
+        org-default-notes-file "~/org/notes.org"
         org-log-done 'time
         org-babel-awk-command (if (string-equal system-type "darwin") "gawk" "awk")
         org-export-backends '(ascii html latex confluence md)
@@ -39,9 +51,6 @@
 
   (define-auto-insert 'org-mode 'org-boilerplate))
 
-
-
-
-
-
-
+;;; -- I have no idea how to make this work, and I can't find any examples that work.
+;; (use-package org-choose
+;;   :ensure org-plus-contrib)

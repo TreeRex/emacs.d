@@ -1,23 +1,15 @@
-;;;; -*- Mode: Emacs-Lisp -*-
+;;;; -*- mode:emacs-lisp; lexical-binding:t; coding:utf-8 -*-
 ;;;;
 ;;;; Configuration for semantic-web related modes
 
-;; sparql-mode isn't handled by any package managers, and I haven't setup
-;; GIT externals yet to pull the version I use, so you will need to grab
-;; it yourself from GitHub
-;;
-;; https://github.com/candera/sparql-mode
-;;
-;; and put it in ~/emacs.
+;; <https://github.com/ljos/sparql-mode>
+(use-package sparql-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.sparql$" . sparql-mode))
+  (add-to-list 'auto-mode-alist '("\\.rq$" . sparql-mode)))
 
-(autoload 'sparql-mode "sparql-mode.el")
-(add-to-list 'auto-mode-alist '("\\.rq\\'" . sparql-mode))
-
-;; ttl-mode isn't handled by any package managers and his hosted on BitBucket,
-;; so you have to pull it yourself and put ttl-mode.el in ~/emacs.
-;;
-;; https://bitbucket.org/nxg/ttl-mode
-
-(autoload 'ttl-mode "ttl-mode" "Major mode for OWL or Turtle files" t)
-(add-hook 'ttl-mode-hook 'turn-on-font-lock)
-(add-to-list 'auto-mode-alist '("\\.ttl\\'" . ttl-mode))
+;; <https://bitbucket.org/nxg/ttl-mode>
+(use-package ttl-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.ttl\\'" . ttl-mode))
+  (add-to-list 'auto-mode-alist '("\\.n3\\'" . ttl-mode)))

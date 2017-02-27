@@ -1,4 +1,4 @@
-;;;; -*- Mode: Emacs-Lisp -*-
+;;;; -*- mode:emacs-lisp; lexical-binding:t; coding:utf-8 -*-
 ;;;;
 ;;;; Dired Configurations
 

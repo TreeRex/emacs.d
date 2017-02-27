@@ -100,7 +100,23 @@
 (dolist (p '(("melpa" . "http://melpa.org/packages/")
              ("org" . "http://orgmode.org/elpa/")))
   (add-to-list 'package-archives p t))
+
+(add-to-list 'package-pinned-packages
+             '("org" . "org"))
+
 (package-initialize)
+
+;;; <https://github.com/jwiegley/use-package/issues/319#issuecomment-185979556>
+;;; 
+;;; org is a built-in package so it is loaded by package-initialize, but I
+;;; want to use the version from the org-plus-contrib repository. This little
+;;; piece of advice tweaks package-installed-p's behavior to return truthy only
+;;; for packages that were installed through package.el.
+(defun package-from-archive (f &rest args)
+  (and (apply f args)
+       (assq (car args) package-alist)))
+
+(advice-add 'package-installed-p :around 'package-from-archive)
 
 ;;; safely load use-package
 (unless (package-installed-p 'use-package)
@@ -108,15 +124,18 @@
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
 (require 'diminish)                     ;built-in
-(setq-default use-package-always-ensure t)
+(setq-default use-package-always-ensure t
+              use-package-verbose t)
 
 
 ;;;; use-package only from here on
 
 ;; this requires that The Silver Searcher be in the path
+;; <https://github.com/Wilfred/ag.el> <http://agel.readthedocs.io/en/latest/>
 (use-package ag                         ;search
   :init
-  (setq ag-reuse-buffers t))
+  (setq ag-reuse-buffers t
+        ag-highlight-search t))
 
 (use-package multiple-cursors           ;editing
   :bind (("C-S-c C-S-c" . mc/edit-lines)
@@ -140,17 +159,6 @@
 ;; displays ^L as a horizontal line (an alternate implementation is
 ;; page-break-lines)
 (use-package form-feed)                 ;visual/buffer
-
-;;; ido-mode (built-in) I seem to have commented this out, so I'm not
-;;; going to do anything with it now
-
-(setq-default ido-create-new-buffer 'always)
-(ido-mode 1)
-(ido-everywhere 1)
-
-(use-package flx-ido
-  :config
-  (flx-ido-mode 1))
 
 (use-package yasnippet
   :config
@@ -216,21 +224,24 @@
                 "tree-advice.el"
                 "tree-git.el"
                 ;;                "tree-cpp.el"
-                ;;                "tree-dired.el"
+                "tree-dired.el"
                 ;;                "tree-dylan.el"
                 ;;                "tree-folding.el"
                 ;;                "tree-gtags.el"
-                ;;                "tree-helm.el"
-                ;;                "tree-javascript.el"
+
+                ;; Pick one: helm or ido
+                ;; "tree-helm.el"
+                "tree-ido.el"
+                "tree-javascript.el"
                 "tree-lisp.el"
                 "tree-markdown.el"
-                ;;                "tree-octave.el"
+                "tree-octave.el"
                 "tree-org.el"
                 "tree-projectile.el"
-                ;;                "tree-semanticweb.el"
+                "tree-semanticweb.el"
                 ;;                "tree-term.el"
                 ;;                "tree-xml.el"
-                ;;                "tree-speedbar.el"
+                "tree-speedbar.el"
                 ))
   (load (concat "~/.emacs.d/" file) t))
 

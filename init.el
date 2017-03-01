@@ -106,18 +106,6 @@
 
 (package-initialize)
 
-;;; <https://github.com/jwiegley/use-package/issues/319#issuecomment-185979556>
-;;; 
-;;; org is a built-in package so it is loaded by package-initialize, but I
-;;; want to use the version from the org-plus-contrib repository. This little
-;;; piece of advice tweaks package-installed-p's behavior to return truthy only
-;;; for packages that were installed through package.el.
-(defun package-from-archive (f &rest args)
-  (and (apply f args)
-       (assq (car args) package-alist)))
-
-(advice-add 'package-installed-p :around 'package-from-archive)
-
 ;;; safely load use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -222,6 +210,7 @@
 
 (dolist (file '(
                 "tree-advice.el"
+                "tree-markup.el"
                 "tree-git.el"
                 ;;                "tree-cpp.el"
                 "tree-dired.el"

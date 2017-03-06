@@ -55,8 +55,6 @@
       inhibit-startup-message t
       large-file-warning-threshold nil)
 
-;(setq plantuml-jar-path "~/tools/plantuml.jar")
-
 ;; Any packages not contained in a package archive are put into ~/emacs/
 (add-to-list 'load-path (expand-file-name "~/emacs"))
 
@@ -118,6 +116,11 @@
 
 ;;;; use-package only from here on
 
+(unless (string-equal system-type "windows-nt")
+  (use-package exec-path-from-shell
+    :config
+    (exec-path-from-shell-initialize)))
+
 ;; this requires that The Silver Searcher be in the path
 ;; <https://github.com/Wilfred/ag.el> <http://agel.readthedocs.io/en/latest/>
 (use-package ag                         ;search
@@ -146,9 +149,11 @@
 
 ;; displays ^L as a horizontal line (an alternate implementation is
 ;; page-break-lines)
-(use-package form-feed)                 ;visual/buffer
+(use-package form-feed
+  :diminish form-feed-mode)                 ;visual/buffer
 
 (use-package yasnippet
+  :diminish yas-minor-mode
   :config
   (yas-global-mode t))
 
@@ -209,27 +214,24 @@
                                   default-frame-alist))
 
 (dolist (file '(
+                ;; advice first
                 "tree-advice.el"
-                "tree-markup.el"
+                ;; then flycheck, since subsequent package configurations may want to
+                ;; add their own checkers
+                "tree-flycheck.el"
                 "tree-git.el"
-                ;;                "tree-cpp.el"
                 "tree-dired.el"
-                ;;                "tree-dylan.el"
-                ;;                "tree-folding.el"
-                ;;                "tree-gtags.el"
-
                 ;; Pick one: helm or ido
                 ;; "tree-helm.el"
                 "tree-ido.el"
                 "tree-javascript.el"
                 "tree-lisp.el"
                 "tree-markdown.el"
+                "tree-markup.el"
                 "tree-octave.el"
                 "tree-org.el"
                 "tree-projectile.el"
                 "tree-semanticweb.el"
-                ;;                "tree-term.el"
-                ;;                "tree-xml.el"
                 "tree-speedbar.el"
                 ))
   (load (concat "~/.emacs.d/" file) t))
@@ -238,3 +240,4 @@
     (server-start))
 
 (setq gc-cons-threshold gc-cons-threshold--orig)
+

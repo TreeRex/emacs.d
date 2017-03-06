@@ -9,6 +9,7 @@
 
 ;; structured sexp editing <https://www.emacswiki.org/emacs/ParEdit>
 (use-package paredit
+  :diminish (paredit-mode . "()")
   :config
   (eldoc-add-command 'paredit-backward-delete 'paredit-close-round))
 
@@ -24,13 +25,18 @@
   (global-paren-face-mode))
 
 ;; indentation with extreme prejudice
-(use-package aggressive-indent)
+(use-package aggressive-indent
+  :diminish aggressive-indent-mode)
 
 ;; common modes across all lisp modes
 (tree/add-lisp-hook (lambda ()
                       (paredit-mode 1)
                       (form-feed-mode)
                       (aggressive-indent-mode)))
+
+;; lisp-interaction-mode and paredit conflict with the binding for C-j
+(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode -1)))
+
 (require 'speedbar)
 
 
